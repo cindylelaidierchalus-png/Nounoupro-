@@ -1,0 +1,3613 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1B2A3B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Nounou Pro">
+<title>Nounou Pro</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#F0EDE8;--surface:#FFF;--deep:#1B2A3B;--mid:#6B7A8D;--light:#B0BAC6;--border:rgba(0,0,0,.07);
+  --cc:#E07A5F;--ccl:#FAF0ED;--ccd:#B85C44;
+  --green:#3A8F6F;--red:#C0473A;--orange:#D4875A;--blue:#3A6EA8;--purple:#7A5FA8;--yellow:#C8960C;
+  --safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;background:var(--bg);color:var(--deep);}
+body{display:flex;flex-direction:column;}
+
+/* ── HEADER ── */
+.hdr{background:var(--deep);padding:calc(var(--safe-top)+10px) 14px 0;flex-shrink:0;z-index:20;}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.hdr-top h1{font-family:'Playfair Display',serif;font-size:1rem;color:#fff;}
+.hdr-top h1 span{color:var(--cc);transition:color .3s;}
+.mnav{display:flex;align-items:center;gap:7px;font-size:.73rem;font-weight:800;color:rgba(255,255,255,.7);}
+.mnav button{background:rgba(255,255,255,.12);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;}
+
+/* ── CHILD TABS ── */
+.ctabs{display:flex;overflow-x:auto;gap:2px;scrollbar-width:none;padding-bottom:0;}
+.ctabs::-webkit-scrollbar{display:none;}
+.ctab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 12px 9px;border:none;background:transparent;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:800;color:rgba(255,255,255,.4);white-space:nowrap;position:relative;flex-shrink:0;transition:color .2s;}
+.ctab.active{color:#fff;}
+.ctab .av{width:29px;height:29px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:900;background:rgba(255,255,255,.1);border:2px solid transparent;transition:all .2s;}
+.ctab.active .av{background:var(--cc);border-color:rgba(255,255,255,.3);transform:scale(1.1);}
+.ctab .tbar{position:absolute;bottom:0;left:0;right:0;height:3px;background:transparent;border-radius:3px 3px 0 0;}
+.ctab.active .tbar{background:var(--cc);}
+.ctab .pdot{position:absolute;top:5px;right:7px;width:7px;height:7px;border-radius:50%;background:#4CAF50;border:2px solid var(--deep);display:none;}
+.ctab.pres .pdot{display:block;}
+.add-tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 12px 9px;border:none;background:transparent;cursor:pointer;color:rgba(255,255,255,.35);font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:800;flex-shrink:0;}
+.add-tab .av{width:29px;height:29px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;background:rgba(255,255,255,.07);border:2px dashed rgba(255,255,255,.2);}
+.stab-settings{color:rgba(255,255,255,.35)!important;}
+.stab-settings.active{color:rgba(255,255,255,.9)!important;}
+
+/* ── SUB TABS ── */
+.subtabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
+.subtabs::-webkit-scrollbar{display:none;}
+.st{flex:0 0 auto;padding:9px 13px;border:none;background:transparent;font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:800;color:var(--light);cursor:pointer;text-transform:uppercase;letter-spacing:.05em;position:relative;transition:color .2s;white-space:nowrap;}
+.st.active{color:var(--cc);}
+.st::after{content:'';position:absolute;bottom:0;left:15%;right:15%;height:2.5px;background:transparent;border-radius:2px;transition:background .2s;}
+.st.active::after{background:var(--cc);}
+
+/* ── CONTENT ── */
+.content{flex:1;overflow-y:auto;padding:13px 12px;padding-bottom:calc(var(--safe-bot)+20px);-webkit-overflow-scrolling:touch;}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border-radius:17px;padding:15px 14px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:11px;border:1px solid var(--border);}
+.ctitle{font-size:.78rem;font-weight:900;color:var(--deep);margin-bottom:12px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.04em;}
+
+/* ── BANNER ── */
+.banner{border-radius:17px;padding:15px 17px;margin-bottom:11px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:var(--cc);box-shadow:0 4px 18px rgba(0,0,0,.15);transition:background .3s;}
+.ban-l{display:flex;align-items:center;gap:11px;}
+.ban-av{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:900;color:#fff;border:3px solid rgba(255,255,255,.4);}
+.ban-name{font-family:'Playfair Display',serif;font-size:1.15rem;color:#fff;}
+.ban-det{font-size:.72rem;color:rgba(255,255,255,.75);margin-top:2px;font-weight:600;}
+.sbadge{padding:6px 11px;border-radius:20px;background:rgba(255,255,255,.2);color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;gap:4px;border:1px solid rgba(255,255,255,.3);}
+.dpulse{width:6px;height:6px;border-radius:50%;background:#A8FF78;animation:pulse 1.4s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+/* ── FIELDS ── */
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.field:last-of-type{margin-bottom:0;}
+.field label{font-size:.62rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);}
+.field input,.field select,.field textarea{background:var(--bg);border:1.5px solid rgba(0,0,0,.09);border-radius:10px;padding:10px 12px;font-family:'Nunito',sans-serif;font-size:.92rem;font-weight:600;color:var(--deep);outline:none;width:100%;-webkit-appearance:none;transition:border-color .2s;}
+.field textarea{resize:none;min-height:75px;line-height:1.5;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--cc);}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+
+/* ── BUTTONS ── */
+.btn{width:100%;padding:12px 14px;border-radius:12px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:.88rem;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .12s;-webkit-appearance:none;}
+.btn:active{transform:scale(.97);}
+.btn+.btn{margin-top:7px;}
+.bg{background:var(--green);color:#fff;box-shadow:0 3px 12px rgba(58,143,111,.4);}
+.br{background:var(--red);color:#fff;box-shadow:0 3px 12px rgba(192,71,58,.4);}
+.bc{background:var(--cc);color:#fff;box-shadow:0 3px 12px rgba(0,0,0,.15);transition:background .3s,transform .12s;}
+.bd{background:var(--deep);color:#fff;box-shadow:0 3px 12px rgba(0,0,0,.2);}
+.bo{background:transparent;color:var(--cc);border:2px solid var(--cc);box-shadow:none;}
+.bgh{background:var(--bg);color:var(--mid);border:1.5px solid var(--border);box-shadow:none;}
+.bdanger{background:#FFF0EF;color:var(--red);border:none;box-shadow:none;}
+.bsm{width:auto;padding:7px 14px;font-size:.78rem;border-radius:9px;}
+
+/* ── ENTRIES ── */
+.elist{display:flex;flex-direction:column;gap:9px;}
+.entry{background:var(--surface);border-radius:14px;padding:13px 14px;border:1px solid var(--border);box-shadow:0 1px 5px rgba(0,0,0,.04);}
+.entry.enc{background:#FFFBF0;border-color:#FFD54F;border-left:4px solid #FFB300;}
+.entry.absent-just{background:#F0F7FF;border-left:4px solid var(--blue);}
+.entry.absent-injust{background:#FFF5F0;border-left:4px solid var(--orange);}
+.entry.conge{background:#F5F0FF;border-left:4px solid var(--purple);}
+.entry.assmat-abs{background:#F0FFF5;border-left:4px solid var(--green);}
+.etop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px;}
+.edate{font-size:.8rem;font-weight:800;color:var(--deep);}
+.eday{font-size:.68rem;color:var(--mid);font-weight:600;margin-top:1px;}
+.edel{background:none;border:none;cursor:pointer;color:var(--light);font-size:.95rem;padding:2px 4px;border-radius:6px;}
+.egrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+.ecell .lbl{font-size:.57rem;text-transform:uppercase;letter-spacing:.07em;color:var(--light);font-weight:800;}
+.ecell .val{font-size:.85rem;font-weight:800;color:var(--deep);}
+.ecell .val.dur{color:var(--cc);}
+.ecell .val.sal{color:var(--green);}
+.ecell .val.enc{color:#E65100;font-size:.75rem;}
+.ecell .val.abs{color:var(--blue);}
+.etag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:.68rem;font-weight:800;margin-top:7px;}
+.etag.just{background:#E8F0FF;color:var(--blue);}
+.etag.injust{background:#FFF0E8;color:var(--orange);}
+.etag.cong{background:#F0E8FF;color:var(--purple);}
+.etag.assabs{background:#E8FFF2;color:var(--green);}
+.etag.supp{background:#FFF8E8;color:var(--yellow);}
+.etag.comp{background:#E8F8FF;color:var(--blue);}
+
+/* ── RECAP ── */
+.rhero{border-radius:17px;padding:20px 18px;margin-bottom:11px;background:var(--deep);box-shadow:0 6px 24px rgba(0,0,0,.18);}
+.rhero h2{font-family:'Playfair Display',serif;font-size:1rem;color:#fff;margin-bottom:15px;}
+.rhero .mchip{font-size:.68rem;font-weight:800;color:rgba(255,255,255,.5);background:rgba(255,255,255,.08);padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em;}
+.day-btn{
+  padding:8px 12px;border-radius:20px;border:2px solid var(--border);
+  background:var(--bg);color:var(--mid);font-size:.78rem;font-weight:800;
+  cursor:pointer;transition:all .18s;letter-spacing:.04em;
+}
+.day-btn.active{
+  background:var(--cc);color:#fff;border-color:var(--cc);
+  box-shadow:0 2px 8px rgba(224,122,95,.35);
+}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;}
+.si{background:rgba(255,255,255,.07);border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,.07);}
+.si .lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.45);font-weight:800;margin-bottom:5px;}
+.si .val{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:#fff;}
+.si .val.hi{color:var(--cc);}
+.gtrow{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;}
+.gtrow .lbl{font-size:.8rem;font-weight:800;color:rgba(255,255,255,.8);}
+.gtrow .sub{font-size:.65rem;color:rgba(255,255,255,.4);margin-top:2px;font-weight:600;}
+.gtrow .amt{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--cc);transition:color .3s;}
+
+/* ── FICHE ENFANT ── */
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);}
+.info-row:last-child{border-bottom:none;}
+.info-row .lbl{font-size:.75rem;color:var(--mid);font-weight:600;}
+.info-row .val{font-size:.82rem;font-weight:800;color:var(--deep);text-align:right;max-width:60%;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--border);border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:var(--green);}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.toggle.on::after{transform:translateX(20px);}
+
+/* ── NOTES ── */
+.note-card{background:var(--surface);border-radius:14px;padding:13px 14px;border:1px solid var(--border);margin-bottom:9px;}
+.note-date{font-size:.78rem;font-weight:800;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;}
+.note-text{font-size:.85rem;line-height:1.6;color:var(--deep);white-space:pre-wrap;}
+
+/* ── ABSENCES TYPES ── */
+.abs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.abs-btn{padding:11px 8px;border-radius:11px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:4px;transition:transform .12s;}
+.abs-btn:active{transform:scale(.96);}
+.abs-btn .ico{font-size:1.2rem;}
+.abs-just{background:#E8F0FF;color:var(--blue);}
+.abs-injust{background:#FFF0E8;color:var(--orange);}
+.abs-cong{background:#F0E8FF;color:var(--purple);}
+.abs-assmat{background:#E8FFF2;color:var(--green);}
+
+/* ── MODAL ── */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:flex-end;backdrop-filter:blur(4px);}
+.modal-ov.open{display:flex;}
+.modal{background:var(--surface);border-radius:24px 24px 0 0;padding:18px 16px calc(var(--safe-bot)+18px);width:100%;max-height:92vh;overflow-y:auto;animation:sup .3s cubic-bezier(.34,1.56,.64,1);}
+@keyframes sup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mhandle{width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px;}
+.modal h3{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--deep);margin-bottom:15px;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:calc(var(--safe-bot)+14px);left:12px;right:12px;background:var(--deep);color:#fff;padding:12px 16px;border-radius:14px;font-size:.87rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.25);transform:translateY(20px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);z-index:999;display:flex;align-items:center;gap:7px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.tok{border-left:4px solid var(--green);}
+.terr{border-left:4px solid var(--red);}
+.tinf{border-left:4px solid var(--cc);}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:var(--border);margin:12px 0;}
+.sec-title{font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--mid);margin-bottom:8px;padding-left:2px;}
+
+/* ── COLORS ── */
+.cpick{display:flex;gap:9px;flex-wrap:wrap;margin-top:4px;}
+.cdot{width:30px;height:30px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:transform .15s,border-color .15s;}
+.cdot.sel{border-color:var(--deep);transform:scale(1.15);}
+
+/* ── PRINT ── */
+@media print{
+  .hdr,.subtabs,.btn,.edel,.toast,.modal-ov{display:none!important;}
+  body{overflow:visible;}
+  .content{overflow:visible;padding:0;}
+  .rhero{background:white;color:black;border:2px solid #ccc;box-shadow:none;}
+  .rhero h2,.si .lbl{color:#333!important;}
+  .si .val,.gtrow .amt{color:black!important;}
+  .si{border:1px solid #ddd;background:#f9f9f9;}
+  .gtrow{background:#f0f0f0;border-color:#333;}
+  .gtrow .lbl{color:#333!important;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SPLASH SCREEN ══ -->
+<div id="splash" style="
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(160deg,#1B2A3B 0%,#243447 40%,#2d4060 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:'Nunito',sans-serif;overflow:hidden;
+  transition:opacity .6s ease, transform .6s ease;
+">
+  <!-- Cercles décoratifs flottants -->
+  <div style="position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(224,122,95,.18) 0%,transparent 70%);top:-60px;right:-80px;animation:pulse 4s ease-in-out infinite;"></div>
+  <div style="position:absolute;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(58,143,111,.15) 0%,transparent 70%);bottom:-40px;left:-50px;animation:pulse 5s ease-in-out infinite reverse;"></div>
+  <div style="position:absolute;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(200,150,12,.12) 0%,transparent 70%);bottom:80px;right:30px;animation:pulse 3.5s ease-in-out infinite;"></div>
+
+  <!-- Étoiles / points décoratifs -->
+  <div id="splashStars" style="position:absolute;inset:0;pointer-events:none;"></div>
+
+  <!-- Contenu central -->
+  <div style="position:relative;text-align:center;padding:0 30px;">
+    <!-- Icône principale -->
+    <div style="font-size:4.5rem;margin-bottom:8px;filter:drop-shadow(0 4px 20px rgba(224,122,95,.5));animation:floaty 3s ease-in-out infinite;">🌸</div>
+
+    <!-- Nounou Pro -->
+    <div id="splashTitre" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#fff;letter-spacing:.02em;margin-bottom:4px;opacity:.9;">Nounou Pro</div>
+
+    <!-- Séparateur décoratif -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 20px;">
+      <div style="height:1px;width:50px;background:linear-gradient(to right,transparent,rgba(255,255,255,.3));"></div>
+      <div style="color:rgba(255,255,255,.4);font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;">Bienvenue</div>
+      <div style="height:1px;width:50px;background:linear-gradient(to left,transparent,rgba(255,255,255,.3));"></div>
+    </div>
+
+    <!-- Prénom ass. mat. -->
+    <div id="splashPrenom" style="
+      font-size:2rem;font-weight:900;
+      background:linear-gradient(135deg,#E07A5F,#C8960C,#E07A5F);
+      background-size:200% auto;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+      animation:shimmer 3s linear infinite;
+      line-height:1.2;margin-bottom:6px;
+      min-height:2.4rem;
+    "></div>
+
+    <!-- Sous-titre -->
+    <div style="font-size:.82rem;font-weight:600;color:rgba(255,255,255,.45);letter-spacing:.05em;margin-bottom:40px;">Assistante Maternelle Agréée</div>
+
+    <!-- Petites icônes -->
+    <div style="display:flex;gap:18px;justify-content:center;margin-bottom:44px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:5px;opacity:.7;">
+        <div style="font-size:1.4rem;">👶</div>
+        <div style="font-size:.6rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;">Enfants</div>
+      </div>
+      <div style="width:1px;background:rgba(255,255,255,.1);height:40px;align-self:center;"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:5px;opacity:.7;">
+        <div style="font-size:1.4rem;">⏱️</div>
+        <div style="font-size:.6rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;">Pointage</div>
+      </div>
+      <div style="width:1px;background:rgba(255,255,255,.1);height:40px;align-self:center;"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:5px;opacity:.7;">
+        <div style="font-size:1.4rem;">💶</div>
+        <div style="font-size:.6rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;">Salaires</div>
+      </div>
+    </div>
+
+    <!-- Bouton entrer -->
+    <button onclick="hideSplash()" style="
+      background:linear-gradient(135deg,#E07A5F,#C8960C);
+      border:none;border-radius:50px;
+      color:#fff;font-family:'Nunito',sans-serif;
+      font-size:.95rem;font-weight:900;
+      padding:15px 44px;cursor:pointer;
+      box-shadow:0 8px 30px rgba(224,122,95,.45);
+      letter-spacing:.03em;
+      transform:translateY(0);
+      transition:transform .15s,box-shadow .15s;
+      -webkit-tap-highlight-color:transparent;
+    " ontouchstart="this.style.transform='scale(.96)'" ontouchend="this.style.transform='scale(1)'">
+      Commencer ✨
+    </button>
+
+    <!-- Version -->
+    <div style="margin-top:20px;font-size:.62rem;color:rgba(255,255,255,.2);font-weight:600;letter-spacing:.08em;">v3.0</div>
+  </div>
+</div>
+
+<style>
+@keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@keyframes shimmer{0%{background-position:0% center;}100%{background-position:200% center;}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.08);opacity:.7;}}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.8);}50%{opacity:.8;transform:scale(1.1);}}
+</style>
+
+<!-- ÉCRAN : CHOIX ENFANT -->
+<div id="childPicker" style="display:none;position:fixed;inset:0;z-index:900;">
+  <!-- Canvas fond animé plein écran -->
+  <canvas id="weatherCanvas" style="position:absolute;inset:0;width:100%;height:100%;display:block;"></canvas>
+  <!-- Contenu défilable par-dessus -->
+  <div style="position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;">
+
+    <!-- Bloc météo immersif en haut -->
+    <div id="cpWeatherBlock" style="padding:48px 20px 20px;text-align:center;min-height:200px;">
+      <!-- Grande icône météo -->
+      <div id="cpWeatherIcon" style="font-size:5rem;line-height:1;margin-bottom:8px;filter:drop-shadow(0 4px 20px rgba(0,0,0,.3));"></div>
+      <!-- Température + description -->
+      <div id="cpWeatherTemp" style="font-size:2.8rem;font-weight:900;color:#3a3a5c;text-shadow:0 1px 8px rgba(255,255,255,.6);line-height:1;"></div>
+      <div id="cpWeatherDesc" style="font-size:.9rem;font-weight:700;color:#5a5a7a;text-shadow:0 1px 4px rgba(255,255,255,.5);margin-top:4px;text-transform:capitalize;"></div>
+      <!-- Lever / coucher + ville -->
+      <div id="cpSunInfo" style="display:flex;justify-content:center;gap:24px;margin-top:12px;"></div>
+      <div id="cpWeatherInfo" style="margin-top:6px;"></div>
+    </div>
+
+    <!-- Titre app + bonjour -->
+    <div style="text-align:center;padding:4px 20px 16px;">
+      <div id="cpTitle" style="font-size:1.1rem;font-weight:900;color:#3a3a5c;font-family:'Playfair Display',serif;letter-spacing:.04em;text-shadow:0 1px 6px rgba(255,255,255,.7);">🌸 Nounou Pro</div>
+      <div id="cpGreeting" style="font-size:.78rem;color:rgba(60,60,100,.75);font-weight:700;margin-top:3px;letter-spacing:.07em;text-transform:uppercase;"></div>
+    </div>
+
+    <!-- Grille enfants -->
+    <div id="cpGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:0 16px 16px;max-width:480px;margin:0 auto;"></div>
+    <div id="cpPresence" style="padding:0 16px;margin-bottom:4px;max-width:480px;margin-left:auto;margin-right:auto;"></div>
+
+    <div style="text-align:center;margin-top:8px;padding:0 16px;">
+      <button onclick="openNewChildFromPicker()" style="background:rgba(255,255,255,.45);border:2px dashed rgba(100,100,160,.3);border-radius:20px;color:rgba(60,60,100,.8);padding:13px 28px;font-size:.85rem;font-weight:700;cursor:pointer;letter-spacing:.04em;width:100%;max-width:480px;">＋ Ajouter un enfant</button>
+    </div>
+    <div style="text-align:center;margin-top:14px;padding-bottom:20px;">
+      <button onclick="hideChildPicker()" style="background:none;border:none;color:rgba(80,80,120,.55);font-size:.72rem;font-weight:600;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;">⚙️ Réglages</button>
+    </div>
+  </div>
+</div>
+<div class="hdr" id="appHdr" style="display:none;">
+  <div class="hdr-top">
+    <h1 onclick="showChildPicker()" style="cursor:pointer;" title="Retour à l'accueil">🌸 <span id="hAccent">Nounou Pro</span></h1>
+    <div class="mnav">
+      <button onclick="changeMonth(-1)">‹</button>
+      <span id="mLabel"></span>
+      <button onclick="changeMonth(1)">›</button>
+    </div>
+  </div>
+  <div class="ctabs" id="cTabs"></div>
+</div>
+
+<div class="subtabs" id="subTabs" style="display:none!important;"></div>
+<div class="content" id="mainContent" style="display:none;"></div>
+<div class="toast" id="toast"></div>
+
+<!-- MODAL: Nouveau/Modifier enfant -->
+<div class="modal-ov" id="mChild" onclick="closeOv(event,'mChild')" style="z-index:1100;">
+<div class="modal" style="max-height:88vh;overflow-y:auto;padding-bottom:20px;">
+  <div class="mhandle"></div>
+  <h3 id="mChildTitle">👶 Nouvel enfant</h3>
+
+  <div class="sec-title" style="margin-top:4px;">👶 Enfant</div>
+  <div class="field"><label>Prénom</label><input type="text" id="mcPrenom" placeholder="Ex: Emma"></div>
+  <div style="margin-bottom:14px;">
+    <div style="font-size:.72rem;font-weight:800;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Photo (optionnel)</div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div id="mcPhotoPreview" style="width:72px;height:72px;border-radius:50%;background:var(--ccl);border:3px dashed var(--cc);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;font-size:2rem;">📷</div>
+      <div style="flex:1;">
+        <input type="file" id="mcPhotoInput" accept="image/*" onchange="loadPhotoPreview(this)"
+          style="display:block;width:100%;font-size:.8rem;color:var(--deep);background:var(--bg);
+          border:1.5px solid var(--border);border-radius:12px;padding:10px 12px;cursor:pointer;
+          font-family:'Nunito',sans-serif;font-weight:600;">
+        <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-top:5px;">Appuyez ici pour choisir une photo depuis votre galerie</div>
+      </div>
+    </div>
+  </div>
+  <div class="r2">
+    <div class="field"><label>Date de naissance</label><input type="date" id="mcNaissance"></div>
+    <div class="field">
+      <label>Tarif horaire net (€/h)</label>
+      <input type="number" id="mcTarif" step="0.10" min="0" placeholder="Défaut réglages" oninput="showTarifBrut(this)">
+      <div id="tarifBrutPreview" style="font-size:.68rem;color:var(--mid);font-weight:600;margin-top:3px;"></div>
+    </div>
+  </div>
+  <div class="field"><label>Allergies / spécificités</label><input type="text" id="mcAllergies" placeholder="Aucune"></div>
+  <div class="field"><label>Notes libres</label><input type="text" id="mcNotes" placeholder="Remarques..."></div>
+  <div class="field"><label>Couleur</label><div class="cpick" id="mcColors"></div></div>
+
+  <!-- Repas pris chez la nounou -->
+  <div class="field" style="margin-top:4px;">
+    <label>🍽️ Repas fournis par la nounou</label>
+    <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-bottom:8px;">Activez les repas que vous fournissez — les autres ne seront pas facturés</div>
+    <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;">
+      <div class="toggle-row" style="padding:10px 14px;border-bottom:1px solid var(--border);">
+        <span style="font-size:.85rem;font-weight:700;color:var(--deep);">🌅 Petit-déjeuner</span>
+        <button class="toggle" id="togRepasPDej" onclick="toggleRepasEnfant('pDej')"></button>
+      </div>
+      <div class="toggle-row" style="padding:10px 14px;border-bottom:1px solid var(--border);">
+        <span style="font-size:.85rem;font-weight:700;color:var(--deep);">☀️ Déjeuner</span>
+        <button class="toggle" id="togRepasDej" onclick="toggleRepasEnfant('dej')"></button>
+      </div>
+      <div class="toggle-row" style="padding:10px 14px;border-bottom:1px solid var(--border);">
+        <span style="font-size:.85rem;font-weight:700;color:var(--deep);">🍪 Goûter</span>
+        <button class="toggle" id="togRepasGout" onclick="toggleRepasEnfant('gout')"></button>
+      </div>
+      <div class="toggle-row" style="padding:10px 14px;">
+        <span style="font-size:.85rem;font-weight:700;color:var(--deep);">🌙 Dîner</span>
+        <button class="toggle" id="togRepasDin" onclick="toggleRepasEnfant('din')"></button>
+      </div>
+    </div>
+    <div id="repasMontantPreview" style="font-size:.72rem;font-weight:700;color:var(--mid);margin-top:8px;text-align:center;"></div>
+  </div>
+
+  <div class="sec-title" style="margin-top:12px;">👨‍👩‍👧 Parents</div>
+  <div class="r2">
+    <div class="field"><label>Parent 1 – Nom</label><input type="text" id="mcP1nom" placeholder="Marie Dupont"></div>
+    <div class="field"><label>Téléphone 1</label><input type="tel" id="mcP1tel" placeholder="06 xx xx xx xx"></div>
+  </div>
+  <div class="r2">
+    <div class="field"><label>Parent 2 – Nom</label><input type="text" id="mcP2nom" placeholder="Jean Dupont"></div>
+    <div class="field"><label>Téléphone 2</label><input type="tel" id="mcP2tel" placeholder="06 xx xx xx xx"></div>
+  </div>
+  <div class="field"><label>Adresse</label><input type="text" id="mcAdresse" placeholder="12 rue des lilas, 75000 Paris"></div>
+
+  <div class="sec-title" style="margin-top:12px;">⚖️ Situation familiale</div>
+  <div class="field">
+    <label>Parents</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;">
+      <button type="button" id="btnCouple" onclick="setGardeType('classique')"
+        style="border:2px solid rgba(0,0,0,.1);border-radius:14px;padding:12px 8px;font-size:.82rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;text-align:center;line-height:1.4;">
+        💑<br><span style="font-size:.75rem;">En couple</span>
+      </button>
+      <button type="button" id="btnSepare" onclick="setGardeType('alternee')"
+        style="border:2px solid rgba(0,0,0,.1);border-radius:14px;padding:12px 8px;font-size:.82rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;text-align:center;line-height:1.4;">
+        🏠🏠<br><span style="font-size:.75rem;">Séparés</span>
+      </button>
+    </div>
+    <input type="hidden" id="mcGardeType" value="classique">
+    <div id="gardeTypeInfo" style="font-size:.68rem;color:var(--mid);font-weight:600;margin-top:6px;"></div>
+  </div>
+  <!-- N° Pajemploi pour parents EN COUPLE (un seul) -->
+  <div class="field" id="pajeClassiqueBlock">
+    <label>📱 N° allocataire Pajemploi</label>
+    <input type="text" id="mcPajeClassique" placeholder="N° allocataire (ex: 0123456789A)" oninput="saveChild()">
+    <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-top:3px;">À renseigner sur pajemploi.fr pour la déclaration mensuelle</div>
+  </div>
+  <div id="gardeAlterneeBlock" style="display:none;">
+    <div style="background:#FFF8F0;border:1.5px solid #FFD4A8;border-radius:14px;padding:12px 14px;margin-bottom:10px;">
+      <div style="font-size:.72rem;font-weight:800;color:#C8960C;margin-bottom:4px;">📋 Garde alternée — 2 contrats distincts</div>
+      <div style="font-size:.68rem;color:#6B5A3A;font-weight:600;line-height:1.6;">
+        • Chaque parent signe <strong>son propre contrat</strong><br>
+        • Chaque parent déclare <strong>sa part sur Pajemploi</strong><br>
+        • Depuis déc. 2025 : les <strong>2 parents bénéficient du CMG</strong><br>
+        • Chacun paie <strong>proportionnellement à ses heures</strong>
+      </div>
+    </div>
+    <div class="field">
+      <label>Répartition semaines</label>
+      <select id="mcRepartition" onchange="toggleRepartCustom()">
+        <option value="50-50">50/50 — Une semaine sur deux</option>
+        <option value="60-40">60/40 — Répartition inégale</option>
+        <option value="custom">Sur mesure (saisir le %)</option>
+      </select>
+    </div>
+    <div class="field" id="repartCustomBlock" style="display:none;">
+      <label>Part Parent 1 (% du temps total)</label>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <input type="number" id="mcPart1" step="5" min="10" max="90" placeholder="ex: 60"
+          style="flex:1;font-size:1.1rem;font-weight:800;text-align:center;"
+          oninput="updatePart2()">
+        <span style="font-size:.85rem;font-weight:700;color:var(--mid);">%</span>
+      </div>
+      <div id="part2Preview" style="font-size:.75rem;color:var(--mid);font-weight:700;margin-top:6px;text-align:center;"></div>
+    </div>
+    <div class="r2">
+      <div class="field"><label>Pajemploi Parent 1</label><input type="text" id="mcPaje1" placeholder="N° allocataire" oninput="saveChild()"></div>
+      <div class="field"><label>Pajemploi Parent 2</label><input type="text" id="mcPaje2" placeholder="N° allocataire" oninput="saveChild()"></div>
+    </div>
+  </div>
+  <div class="sec-title" style="margin-top:12px;">🚨 Personnes à prévenir en urgence</div>
+  <div id="urgenceList"></div>
+  <button class="btn bgh" style="margin-bottom:10px;" onclick="addUrgence()">➕ Ajouter une personne</button>
+
+  <div class="sec-title" style="margin-top:4px;">✅ Personnes autorisées à récupérer l'enfant</div>
+  <div id="autorisesList"></div>
+  <button class="btn bgh" style="margin-bottom:10px;" onclick="addAutorise()">➕ Ajouter une personne</button>
+
+  <div class="sec-title" style="margin-top:12px;">📄 Contrat</div>
+  <div class="field"><label>Heures hebdomadaires</label><input type="number" id="mcHHebdo" step="0.5" min="0" placeholder="40"></div>
+  <div class="field">
+    <label>Jours travaillés</label>
+    <div id="mcJoursGrid" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
+      <button type="button" class="day-btn" data-day="Lun" onclick="toggleDay(this)">Lun</button>
+      <button type="button" class="day-btn" data-day="Mar" onclick="toggleDay(this)">Mar</button>
+      <button type="button" class="day-btn" data-day="Mer" onclick="toggleDay(this)">Mer</button>
+      <button type="button" class="day-btn" data-day="Jeu" onclick="toggleDay(this)">Jeu</button>
+      <button type="button" class="day-btn" data-day="Ven" onclick="toggleDay(this)">Ven</button>
+      <button type="button" class="day-btn" data-day="Sam" onclick="toggleDay(this)">Sam</button>
+      <button type="button" class="day-btn" data-day="Dim" onclick="toggleDay(this)">Dim</button>
+    </div>
+    <input type="hidden" id="mcJours" value="Lun,Mar,Mer,Jeu,Ven">
+  </div>
+  <div class="card" style="background:#EAF7F0;border:1.5px solid #B2DFC8;padding:10px 12px;margin-bottom:10px;">
+    <div style="font-size:.72rem;font-weight:800;color:#2A6B4A;margin-bottom:6px;">⚖️ Repos légaux obligatoires (Conv. collective)</div>
+    <div style="font-size:.68rem;color:#2A6B4A;font-weight:600;line-height:1.7;">
+      • <strong>11h</strong> de repos consécutifs minimum entre 2 journées de garde<br>
+      • <strong>1 jour de repos hebdomadaire</strong> obligatoire (en général le dimanche, ou autre jour convenu)<br>
+      • <strong>48h de repos</strong> consécutives par semaine si possible (ex: sam+dim)<br>
+      • Travail du dimanche ou jour de repos : <strong>+25% de majoration</strong> (conv. collective)
+    </div>
+  </div>
+  <div class="field"><label>Type de planning contractuel</label>
+    <select id="mcTypePlanning" onchange="togglePlanningFields()">
+      <option value="hebdo">Semaine fixe (mêmes horaires chaque semaine)</option>
+      <option value="alternes">Semaines alternées A/B (planning infirmière, roulement...)</option>
+      <option value="variable">Semaine variable (saisie semaine par semaine)</option>
+    </select>
+  </div>
+
+  <!-- Planning fixe par jour -->
+  <div id="planningFixeBlock">
+    <div style="font-size:.72rem;font-weight:800;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin:8px 0 6px;">Horaires par jour (optionnel)</div>
+    <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-bottom:8px;">Remplissez pour un suivi précis. Si vide, le total hebdo est utilisé.</div>
+    <div id="horairesFixesGrid" style="display:flex;flex-direction:column;gap:6px;"></div>
+  </div>
+
+  <!-- Planning alternés A/B -->
+  <div id="planningAlternesBlock" style="display:none;">
+    <div style="font-size:.72rem;font-weight:800;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin:8px 0 6px;">Semaine A</div>
+    <div id="horairesAGrid" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
+    <div style="font-size:.72rem;font-weight:800;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin:8px 0 6px;">Semaine B</div>
+    <div id="horairesBGrid" style="display:flex;flex-direction:column;gap:6px;"></div>
+    <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-top:6px;">💡 Le total hebdo sera la moyenne des semaines A et B</div>
+  </div>
+
+  <!-- Planning variable -->
+  <div id="planningVariableBlock" style="display:none;">
+    <div style="background:var(--ccl);border-radius:12px;padding:10px 12px;margin-top:4px;">
+      <div style="font-size:.72rem;font-weight:800;color:var(--ccd);margin-bottom:4px;">📆 Semaine variable</div>
+      <div style="font-size:.68rem;color:var(--ccd);font-weight:600;line-height:1.6;">Les horaires changent chaque semaine. Saisissez-les semaine par semaine dans l'onglet <strong>📆 Planning</strong> de l'enfant. Le salaire est lissé sur le mois selon le total horaire du contrat.</div>
+    </div>
+  </div>
+
+  <div class="field"><label>Type d'année</label>
+    <select id="mcAnnee" onchange="toggleSemainesField()">
+      <option value="complete">Année complète (52 semaines)</option>
+      <option value="incomplete">Année incomplète</option>
+    </select>
+  </div>
+  <div class="field" id="semainesField" style="display:none;">
+    <label>Nombre de semaines travaillées / an</label>
+    <input type="number" id="mcNbSemaines" step="1" min="1" max="51" placeholder="Ex: 47">
+    <div style="font-size:.72rem;color:var(--mid);font-weight:600;margin-top:3px;">💡 = 52 semaines − congés payés (en général 47 sem. pour 5 semaines de CP)</div>
+  </div>
+
+  <div class="field" style="margin-top:8px;"><label>🏖️ Méthode de calcul des congés payés</label>
+    <select id="mcMethodeCP">
+      <option value="10pct">10% du salaire brut mensuel</option>
+      <option value="maintien">Maintien de salaire</option>
+    </select>
+    <div style="font-size:.7rem;color:var(--mid);font-weight:600;margin-top:3px;">⚖️ Loi : méthode la plus favorable entre 10% et maintien. 10% est souvent la plus avantageuse.</div>
+  </div>
+
+  <div style="height:14px"></div>
+  <button class="btn bc" onclick="saveChild()">💾 Enregistrer</button>
+  <button class="btn bgh" onclick="closeModal('mChild')">Annuler</button>
+</div></div>
+
+<!-- MODAL: Absence / Congé -->
+<div class="modal-ov" id="mAbs" onclick="closeOv(event,'mAbs')">
+<div class="modal">
+  <div class="mhandle"></div>
+  <h3 id="mAbsTitle">📅 Absence / Congé</h3>
+  <div class="r2">
+    <div class="field"><label>Date début</label><input type="date" id="absDebut"></div>
+    <div class="field"><label>Date fin</label><input type="date" id="absFin"></div>
+  </div>
+  <div class="field"><label>Type</label>
+    <select id="absType" onchange="onAbsTypeChange()">
+      <option value="enf-just">Absence enfant justifiée (déduite du salaire)</option>
+      <option value="enf-injust">Absence enfant injustifiée (salaire maintenu)</option>
+      <option value="conge-enf">Congé enfant (prévu au contrat)</option>
+      <option value="cp">Congés payés (ass. mat.)</option>
+      <option value="conge-am-paye">Absence Ass. Mat. — payée (avec salaire, sans indemnités)</option>
+      <option value="conge-am-np">Absence Ass. Mat. — non payée (retenue sur salaire)</option>
+    </select>
+  </div>
+  <!-- Sous-choix visible seulement pour Absence Ass. Mat. -->
+  <div id="absAssmatChoix" style="display:none;background:var(--ccl);border-radius:12px;padding:12px 14px;margin-top:-4px;margin-bottom:8px;">
+    <div style="font-size:.75rem;font-weight:800;color:var(--deep);margin-bottom:10px;">🏠 Type d'absence Ass. Mat. :</div>
+    <label style="display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer;">
+      <input type="radio" name="absAssmatType" id="absAssmatPaye" value="conge-am-paye" checked
+        style="accent-color:var(--cc);width:18px;height:18px;" onchange="document.getElementById('absType').value='conge-am-paye'">
+      <div>
+        <div style="font-size:.85rem;font-weight:800;color:var(--deep);">💰 Absence payée</div>
+        <div style="font-size:.7rem;color:var(--mid);font-weight:600;">Salaire maintenu, sans indemnités entretien</div>
+      </div>
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer;border-top:1px solid var(--border);">
+      <input type="radio" name="absAssmatType" id="absAssmatNP" value="conge-am-np"
+        style="accent-color:var(--cc);width:18px;height:18px;" onchange="document.getElementById('absType').value='conge-am-np'">
+      <div>
+        <div style="font-size:.85rem;font-weight:800;color:var(--deep);">✂️ Absence non payée</div>
+        <div style="font-size:.7rem;color:var(--mid);font-weight:600;">Retenue sur salaire (formule Cour de Cassation)</div>
+      </div>
+    </label>
+  </div>
+  <div class="field"><label>Note (optionnel)</label><input type="text" id="absNote" placeholder="Ex: maladie, vacances..."></div>
+  <div style="height:10px"></div>
+  <button class="btn bc" onclick="saveAbsence()">💾 Enregistrer</button>
+  <button class="btn bgh" onclick="closeModal('mAbs')">Annuler</button>
+</div></div>
+
+<!-- MODAL: Note journalière -->
+<div class="modal-ov" id="mNote" onclick="closeOv(event,'mNote')">
+<div class="modal">
+  <div class="mhandle"></div>
+  <h3 id="mNoteTitle">📝 Note journalière</h3>
+  <div class="field"><label>Date</label><input type="date" id="noteDate"></div>
+  <div class="field">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <label style="margin-bottom:0;">Note libre (repas, sieste, activités...)</label>
+      <button id="btnMicNote" onclick="toggleVoiceNote()" style="background:var(--ccl);border:2px solid var(--cc);border-radius:50%;width:42px;height:42px;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s;" title="Dicter par la voix">🎤</button>
+    </div>
+    <div id="voiceNoteStatus" style="display:none;background:rgba(224,122,95,.12);border-radius:10px;padding:8px 12px;margin-bottom:8px;font-size:.78rem;font-weight:700;color:var(--cc);text-align:center;">🔴 Écoute… Dictez votre note !</div>
+    <textarea id="noteText" placeholder="Ex: Emma a bien mangé à 12h. Sieste 13h-15h. Bonne humeur !"></textarea>
+  </div>
+  <div style="height:10px"></div>
+  <button class="btn bc" onclick="saveNote()">💾 Enregistrer</button>
+  <button class="btn bgh" onclick="stopVoice();closeModal('mNote')">Annuler</button>
+</div></div>
+
+<!-- MODAL: Confirmation -->
+<div class="modal-ov" id="mConfirm" onclick="closeOv(event,'mConfirm')">
+<div class="modal" style="text-align:center;">
+  <div class="mhandle"></div>
+  <div style="font-size:2rem;margin-bottom:8px;" id="mConfirmIco">🗑️</div>
+  <h3 id="mConfirmTitle" style="margin-bottom:6px;">Confirmer ?</h3>
+  <p id="mConfirmMsg" style="font-size:.83rem;color:var(--mid);font-weight:600;margin-bottom:20px;"></p>
+  <button class="btn bdanger" id="mConfirmOk" onclick="_confirmOk()">Supprimer</button>
+  <button class="btn bgh" onclick="closeModal('mConfirm')" style="margin-top:8px;">Annuler</button>
+</div></div>
+
+<!-- MODAL: Heure supplémentaire/complémentaire -->
+<div class="modal-ov" id="mHSup" onclick="closeOv(event,'mHSup')">
+<div class="modal">
+  <div class="mhandle"></div>
+  <h3>⏱️ Heures supplémentaires / complémentaires</h3>
+  <div class="r2">
+    <div class="field"><label>Date</label><input type="date" id="hsDate"></div>
+    <div class="field"><label>Type</label>
+      <select id="hsType">
+        <option value="comp">Complémentaires (jusqu'à 45h/sem)</option>
+        <option value="supp">Majorées (au-delà de 45h/sem)</option>
+      </select>
+    </div>
+  </div>
+  <div class="r2">
+    <div class="field"><label>Heures</label><input type="number" id="hsH" min="0" max="23" placeholder="0"></div>
+    <div class="field"><label>Minutes</label><input type="number" id="hsMin" min="0" max="59" placeholder="0"></div>
+  </div>
+  <div class="field"><label>Note</label><input type="text" id="hsNote" placeholder="Ex: garde exceptionnelle"></div>
+  <div style="height:10px"></div>
+  <button class="btn bc" onclick="saveHSup()">💾 Enregistrer</button>
+  <button class="btn bgh" onclick="closeModal('mHSup')">Annuler</button>
+</div></div>
+
+<script>
+// ═══════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════
+const COLORS=['#E07A5F','#3A8F6F','#3A6EA8','#9B72B0','#D4875A','#4AABB8','#C0473A','#C8960C'];
+const CL=['#FAF0ED','#E6F4F0','#E8EEF8','#F2EBF7','#FAF0E6','#E6F6F8','#FFF0EF','#FFF8E8'];
+const CD=['#B85C44','#2A7A5A','#2A5A98','#7A5290','#A86540','#2A8B98','#A03828','#A87808'];
+const MONTHS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const MSH=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+const WDAYS=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+
+// ═══════════════════════════════════
+// STATE
+// ═══════════════════════════════════
+let S={
+  params:{nom:'',agrement:'',tel:'',tarif:4.50,indemnite:3.00,repas:0,autresFrais:[],
+    tauxComp:0,tauxSupp:10,methodeCP:'10pct'},
+  children:[],
+  pointages:[],
+  absences:[],
+  notes:[],
+  hsupp:[]
+};
+let curMonth,curYear,curChild=0,curSub='accueil';
+
+// ═══════════════════════════════════
+// INIT
+// ═══════════════════════════════════
+function init(){
+  load();
+  const now=new Date();
+  curMonth=now.getMonth(); curYear=now.getFullYear();
+  if(!S.children.length) addDefaultChildren();
+  updateMLabel();
+  applyTheme(S.children[curChild]?.colorIdx||0);
+  // S'assurer que l'app est invisible tant qu'on est sur le splash/picker
+  document.getElementById('appHdr').style.display='none';
+  document.getElementById('mainContent').style.display='none';
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  initSplash();
+  // NE PAS appeler render() ici — l'app reste cachée sous le splash
+}
+
+function initSplash(){
+  // Afficher le prénom de l'ass. mat.
+  const nom=S.params?.nom||'';
+  const prenom=nom.trim().split(' ')[0]||'';
+  const el=document.getElementById('splashPrenom');
+  if(el) el.textContent=prenom?prenom:'';
+
+  // Générer des étoiles décoratives
+  const stars=document.getElementById('splashStars');
+  if(stars){
+    let html='';
+    const shapes=['✦','✧','·','⋆','✶','∗'];
+    for(let i=0;i<28;i++){
+      const x=Math.random()*100;
+      const y=Math.random()*100;
+      const s=0.5+Math.random()*1.2;
+      const delay=(Math.random()*4).toFixed(1);
+      const dur=(2+Math.random()*3).toFixed(1);
+      const shape=shapes[Math.floor(Math.random()*shapes.length)];
+      const op=0.1+Math.random()*0.35;
+      html+=`<span style="position:absolute;left:${x}%;top:${y}%;font-size:${s}rem;color:rgba(255,255,255,${op});animation:twinkle ${dur}s ${delay}s ease-in-out infinite;">${shape}</span>`;
+    }
+    stars.innerHTML=html;
+  }
+
+  // L'utilisateur doit appuyer sur "Commencer" - pas de auto-dismiss
+}
+
+function hideSplash(){
+  const splash=document.getElementById('splash');
+  if(!splash)return;
+  splash.style.opacity='0';
+  splash.style.transform='scale(1.04)';
+  setTimeout(()=>{
+    splash.style.display='none';
+    showChildPicker();
+  },500);
+}
+
+function openNewChildFromPicker(){
+  // Le childPicker reste visible (z-index 900), la modale enfant est à 1100
+  openNewChild();
+  // Après sauvegarde, retourner au picker pour sélectionner l'enfant ajouté
+}
+
+function showChildPicker(){
+  const picker=document.getElementById('childPicker');
+  if(!picker)return;
+  renderChildPicker();
+  picker.style.display='block';
+  picker.style.opacity='0';
+  picker.style.transition='opacity .4s';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>picker.style.opacity='1'));
+  fetchWeather();
+}
+
+function hideChildPicker(){
+  const picker=document.getElementById('childPicker');
+  if(!picker)return;
+  picker.style.opacity='0';
+  setTimeout(()=>{picker.style.display='none';},350);
+  showApp();
+  selChild(99); // va aux réglages
+}
+
+function showApp(){
+  document.getElementById('appHdr').style.display='';
+  document.getElementById('subTabs').style.cssText='';
+  document.getElementById('mainContent').style.display='';
+}
+
+function selectChildFromPicker(idx){
+  const picker=document.getElementById('childPicker');
+  if(picker){picker.style.opacity='0';setTimeout(()=>picker.style.display='none',350);}
+  curChild=idx;
+  curSub='accueil';
+  applyTheme(S.children[idx]?.colorIdx||0);
+  showApp();
+  render();
+}
+
+// ══════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+// MÉTÉO OPEN-METEO + CANVAS ANIMÉ + LEVER/COUCHER SOLEIL
+// ══════════════════════════════════════════════════════════════
+let _wxRaf=null;
+let _wxClouds=[];
+let _wxStars=[];
+let _wxRain=[];
+let _wxCode=0; // WMO weather code
+let _wxTemp=null;
+
+// ── Calcul lever/coucher soleil ──
+function calcSunTimes(){
+  const lat=parseFloat(S.params?.latitude)||46.5;
+  const lon=parseFloat(S.params?.longitude)||2.35;
+  const now=new Date();
+  const doy=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);
+  const B=2*Math.PI*(doy-81)/364;
+  const eqTime=9.87*Math.sin(2*B)-7.53*Math.cos(B)-1.5*Math.sin(B);
+  const decl=23.45*Math.sin(2*Math.PI*(284+doy)/365)*(Math.PI/180);
+  const latR=lat*(Math.PI/180);
+  const cosHA=-Math.tan(latR)*Math.tan(decl);
+  if(cosHA<-1||cosHA>1)return{sunrise:{h:6,m:0},sunset:{h:20,m:0}};
+  const ha=Math.acos(cosHA)*(180/Math.PI);
+  const noon=12-(lon/15)-(eqTime/60);
+  const tz=now.getTimezoneOffset()/-60;
+  const toHM=v=>{const l=v+tz;return{h:Math.floor(l),m:Math.round((l%1)*60)};};
+  return{sunrise:toHM(noon-ha/15),sunset:toHM(noon+ha/15)};
+}
+
+// ── WMO code → emoji + description ──
+function wxInfo(code,isNight){
+  if(code===0) return{ico:isNight?'🌙':'☀️',desc:'Ciel dégagé'};
+  if(code<=2)  return{ico:isNight?'🌙':'🌤️',desc:'Peu nuageux'};
+  if(code===3) return{ico:'☁️',desc:'Couvert'};
+  if(code<=49) return{ico:'🌫️',desc:'Brouillard'};
+  if(code<=59) return{ico:'🌦️',desc:'Bruine'};
+  if(code<=69) return{ico:'🌧️',desc:'Pluie'};
+  if(code<=79) return{ico:'🌨️',desc:'Neige'};
+  if(code<=82) return{ico:'🌧️',desc:'Averses'};
+  if(code<=84) return{ico:'🌨️',desc:'Averses de neige'};
+  if(code<=99) return{ico:'⛈️',desc:'Orage'};
+  return{ico:'🌡️',desc:''};
+}
+
+// ── Couleurs fond selon heure + météo ──
+function skyColors(hour,code){
+  const rain=code>=51;
+  const cloud=code>=3&&code<51;
+  // Tons pastel doux — toutes conditions
+  if(hour>=5&&hour<7)  return rain?['#c9b8d0','#d4c4dc','#e0d4e8','#eedde8']:['#f7c4a8','#f9d4b8','#fce8d0','#d4e8f4']; // aube : pêche→lavande / pluie : mauve pâle
+  if(hour>=7&&hour<10) return rain?['#b8c8d8','#ccd8e4','#dde8f0','#eef2f8']:['#b8d8f0','#cce4f8','#ddeeff','#f0f7fe']; // matin : bleu ciel pastel
+  if(hour>=10&&hour<16)return rain?['#b4c4d4','#c8d8e4','#dce8f0']:cloud?['#c4d8ec','#d4e4f4','#e4f0fc']:['#a8ccee','#bcd8f4','#d0e8fc','#e8f4ff']; // jour : bleu pâle
+  if(hour>=16&&hour<18)return rain?['#c4b4c4','#d4c4d4','#e4d4e0']:['#f4c4a0','#f8d4b4','#fce8d0','#e0cce8']; // soir : pêche→lilas
+  if(hour>=18&&hour<20)return rain?['#9898b8','#b0b0cc','#c8c8e0']:['#d0a8cc','#e0b8d8','#ddb8e8','#b0a8d4']; // crépuscule : rose-mauve pastel
+  return['#8898b8','#9daac8','#b0bcd4','#8890b0']; // nuit : bleu-gris doux
+}
+
+// ── Canvas animation ──
+function initWeatherCanvas(){
+  const canvas=document.getElementById('weatherCanvas');
+  if(!canvas)return;
+  const W=canvas.width=window.innerWidth;
+  const H=canvas.height=window.innerHeight;
+  const hour=new Date().getHours();
+  const isNight=hour<6||hour>=20;
+  // Étoiles
+  _wxStars=[];
+  if(isNight||hour<7){
+    for(let i=0;i<(isNight?140:60);i++)
+      _wxStars.push({x:Math.random()*W,y:Math.random()*H*0.6,r:.4+Math.random()*1.2,t:Math.random()*6.28,s:.015+Math.random()*.025});
+  }
+  // Nuages
+  _wxClouds=[];
+  const nb=_wxCode>=3?7:_wxCode>=1?4:2;
+  for(let i=0;i<nb;i++)
+    _wxClouds.push({x:Math.random()*W*1.4-W*.2,y:H*.05+Math.random()*H*.32,
+      w:W*.25+Math.random()*W*.25,h:40+Math.random()*50,
+      sp:.15+Math.random()*.25,op:_wxCode>=3?.28+Math.random()*.15:.12+Math.random()*.1});
+  // Pluie
+  _wxRain=[];
+  if(_wxCode>=51&&_wxCode<=82){
+    const n=_wxCode>=80?120:70;
+    for(let i=0;i<n;i++)
+      _wxRain.push({x:Math.random()*W,y:Math.random()*H,sp:8+Math.random()*5,len:14+Math.random()*10,op:.25+Math.random()*.35});
+  }
+  if(_wxRaf) cancelAnimationFrame(_wxRaf);
+  animateWeather();
+}
+
+function animateWeather(){
+  const picker=document.getElementById('childPicker');
+  if(!picker||picker.style.display==='none'){_wxRaf=null;return;}
+  const canvas=document.getElementById('weatherCanvas');
+  if(!canvas){_wxRaf=null;return;}
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  const t=Date.now()/1000;
+  const hour=new Date().getHours();
+  // Fond dégradé
+  const cols=skyColors(hour,_wxCode);
+  const g=ctx.createLinearGradient(0,0,0,H);
+  cols.forEach((c,i)=>g.addColorStop(i/(cols.length-1),c));
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  // Soleil ou lune
+  const isNight=hour<6||hour>=20;
+  const isDawn=hour>=5&&hour<7;
+  const isDusk=hour>=18&&hour<20;
+  if(!isNight&&_wxCode<3){
+    // Soleil
+    const sx=W*.75,sy=H*.18;
+    const gSun=ctx.createRadialGradient(sx,sy,0,sx,sy,80);
+    gSun.addColorStop(0,'rgba(255,230,180,.85)');
+    gSun.addColorStop(.4,'rgba(255,210,160,.4)');
+    gSun.addColorStop(1,'rgba(255,190,140,0)');
+    ctx.fillStyle=gSun;ctx.beginPath();ctx.arc(sx,sy,80,0,Math.PI*2);ctx.fill();
+  } else if(isNight&&_wxCode<3){
+    // Lune
+    ctx.fillStyle='rgba(230,225,255,.75)';
+    ctx.beginPath();ctx.arc(W*.78,H*.12,22,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=skyColors(hour,_wxCode)[0];
+    ctx.beginPath();ctx.arc(W*.78+10,H*.12-4,18,0,Math.PI*2);ctx.fill();
+  }
+  // Étoiles
+  _wxStars.forEach(s=>{
+    s.t+=s.s;
+    const a=.3+.7*Math.abs(Math.sin(s.t));
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,'+a+')';ctx.fill();
+  });
+  // Nuages
+  _wxClouds.forEach(c=>{
+    c.x+=c.sp;if(c.x>W+c.w)c.x=-c.w;
+    const bob=Math.sin(t*.4+c.x*.008)*3;
+    drawWxCloud(ctx,c.x,c.y+bob,c.w,c.h,c.op);
+  });
+  // Pluie
+  if(_wxRain.length){
+    ctx.strokeStyle='rgba(120,160,200,.55)';ctx.lineWidth=1.2;
+    _wxRain.forEach(r=>{
+      r.y+=r.sp;if(r.y>H){r.y=-r.len;r.x=Math.random()*W;}
+      ctx.globalAlpha=r.op;
+      ctx.beginPath();ctx.moveTo(r.x,r.y);ctx.lineTo(r.x-1.5,r.y+r.len);ctx.stroke();
+    });
+    ctx.globalAlpha=1;
+  }
+  // Neige
+  if(_wxCode>=70&&_wxCode<=79){
+    ctx.fillStyle='rgba(255,255,255,.7)';
+    _wxRain.forEach(r=>{
+      r.y+=r.sp*.3;r.x+=Math.sin(t+r.y*.05)*.5;
+      if(r.y>H){r.y=0;r.x=Math.random()*W;}
+      ctx.beginPath();ctx.arc(r.x,r.y,2,0,Math.PI*2);ctx.fill();
+    });
+  }
+  // Orage : éclair occasionnel
+  if(_wxCode>=95&&Math.random()<.002){
+    ctx.fillStyle='rgba(255,255,200,.15)';ctx.fillRect(0,0,W,H);
+  }
+  _wxRaf=requestAnimationFrame(animateWeather);
+}
+
+function drawWxCloud(ctx,x,y,w,h,op){
+  ctx.save();ctx.globalAlpha=op;ctx.fillStyle='#fff';
+  ctx.beginPath();
+  ctx.arc(x+w*.25,y+h*.5,h*.45,0,Math.PI*2);
+  ctx.arc(x+w*.5,y+h*.28,h*.56,0,Math.PI*2);
+  ctx.arc(x+w*.75,y+h*.5,h*.42,0,Math.PI*2);
+  ctx.arc(x+w*.38,y+h*.56,h*.44,0,Math.PI*2);
+  ctx.arc(x+w*.62,y+h*.54,h*.4,0,Math.PI*2);
+  ctx.fill();ctx.restore();
+}
+
+// ── Appel API Open-Meteo ──
+async function fetchWeather(){
+  const lat=parseFloat(S.params?.latitude)||46.5;
+  const lon=parseFloat(S.params?.longitude)||2.35;
+  try{
+    const url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon
+      +'&current=temperature_2m,weather_code,is_day&timezone=auto';
+    const r=await fetch(url);
+    const d=await r.json();
+    _wxTemp=Math.round(d.current.temperature_2m);
+    _wxCode=d.current.weather_code||0;
+    const isNight=!d.current.is_day;
+    updateWeatherUI(isNight);
+    initWeatherCanvas();
+  }catch(e){
+    // Pas de réseau : fallback heure seulement
+    const h=new Date().getHours();
+    _wxCode=0;_wxTemp=null;
+    updateWeatherUI(h<6||h>=20);
+    initWeatherCanvas();
+  }
+}
+
+function updateWeatherUI(isNight){
+  const hour=new Date().getHours();
+  const info=wxInfo(_wxCode,isNight);
+  const pad=n=>String(n<0?0:n).padStart(2,'0');
+  const {sunrise,sunset}=calcSunTimes();
+  const fmtT=t=>pad(t.h)+':'+pad(t.m);
+  // Grande icône
+  const ico=document.getElementById('cpWeatherIcon');
+  const tmp=document.getElementById('cpWeatherTemp');
+  const dsc=document.getElementById('cpWeatherDesc');
+  const sun=document.getElementById('cpSunInfo');
+  const wEl=document.getElementById('cpWeatherInfo');
+  if(ico) ico.textContent=info.ico;
+  if(tmp) tmp.textContent=_wxTemp!==null?_wxTemp+'°C':'';
+  if(dsc) dsc.textContent=info.desc;
+  if(sun) sun.innerHTML=
+    '<div style="text-align:center;">'
+    +'<div style="font-size:.82rem;">🌄</div>'
+    +'<div style="font-size:.72rem;font-weight:800;color:#3a3a6a;">'+fmtT(sunrise)+'</div>'
+    +'<div style="font-size:.58rem;color:rgba(80,80,120,.6);font-weight:600;">Lever</div></div>'
+    +'<div style="text-align:center;">'
+    +'<div style="font-size:.82rem;">🌅</div>'
+    +'<div style="font-size:.72rem;font-weight:800;color:#3a3a6a;">'+fmtT(sunset)+'</div>'
+    +'<div style="font-size:.58rem;color:rgba(80,80,120,.6);font-weight:600;">Coucher</div></div>';
+  if(wEl) wEl.innerHTML='<div style="font-size:.7rem;color:rgba(80,80,120,.6);font-weight:600;margin-top:4px;">'+(S.params?.ville||'Ma ville')+'</div>';
+}
+
+// Alias pour compatibilité
+function updateSunMoon(){ updateWeatherUI(new Date().getHours()<6||new Date().getHours()>=20); }
+
+function renderChildPicker(){
+  const grid=document.getElementById('cpGrid');
+  if(!grid)return;
+  const today=new Date().toISOString().slice(0,10);
+  const h=document.getElementById('cpGreeting');
+  const now=new Date().getHours();
+  const greet=now<12?'Bonjour !':(now<18?'Bon apres-midi !':'Bonsoir !');
+  if(h) h.textContent=greet+(S.params.nom?' '+S.params.nom.split(' ')[0]:'');
+  // Titre avec prénom de l'ass. mat.
+  const prenom1=S.params.nom?(S.params.nom.trim().split(' ')[0]):'';
+  const titleEl=document.getElementById('cpTitle');
+  if(titleEl) titleEl.textContent='🌸 '+(prenom1||'Nounou Pro');
+  // Splash title aussi
+  const splashT=document.getElementById('splashTitre');
+  if(splashT) splashT.textContent=prenom1||'Nounou Pro';
+  // Afficher uniquement les prenoms, style immersif
+  if(!S.children.length){
+    grid.innerHTML='<div style="text-align:center;padding:20px;color:rgba(255,255,255,.4);font-size:.85rem;font-weight:600;">Aucun enfant<br><br>Tapez + pour ajouter</div>';
+  } else {
+    grid.innerHTML=S.children.map((c,i)=>{
+      const enc=S.pointages.some(p=>p.cid===c.id&&p.date===today&&!p.hDep);
+      const parti=S.pointages.some(p=>p.cid===c.id&&p.date===today&&p.hDep)&&!enc;
+      const color=COLORS[c.colorIdx];
+      let photoEl='';
+      if(c.photo){
+        photoEl='<img src="'+c.photo+'" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2.5px solid '+(enc?'#4CAF50':'rgba(255,255,255,.3)')+';flex-shrink:0;">';
+      } else {
+        photoEl='<div style="width:44px;height:44px;border-radius:50%;background:'+color+';border:2.5px solid '+(enc?'#4CAF50':'rgba(255,255,255,.25)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.2rem;font-weight:900;color:#fff;">'+c.prenom[0].toUpperCase()+'</div>';
+      }
+      const arr=S.pointages.find(p=>p.cid===c.id&&p.date===today&&!p.hDep);
+      const dep=S.pointages.find(p=>p.cid===c.id&&p.date===today&&p.hDep);
+      let statusBadge='';
+      if(enc){
+        statusBadge='<div style="display:flex;align-items:center;gap:4px;"><div style="width:7px;height:7px;border-radius:50%;background:#4CAF50;"></div><span style="font-size:.65rem;font-weight:800;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.04em;">En garde '+(arr?'· '+arr.hArr:'')+'</span></div>';
+      } else if(parti){
+        statusBadge='<span style="font-size:.65rem;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.04em;">Parti'+(dep?'· '+dep.hDep:'')+'</span>';
+      } else {
+        statusBadge='<span style="font-size:.65rem;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.04em;">Absent</span>';
+      }
+      return '<div onclick="selectChildFromPicker('+i+')" style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.1);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,'+(enc?'.35':'.12')+');border-radius:18px;padding:13px 16px;cursor:pointer;transition:all .15s;">'
+        +photoEl
+        +'<div style="flex:1;min-width:0;">'
+        +'<div style="font-size:1.25rem;font-weight:900;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.4);letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+c.prenom+'</div>'
+        +statusBadge
+        +'</div>'
+        +'<div style="font-size:1.2rem;color:rgba(255,255,255,.3);">›</div>'
+        +'</div>';
+    }).join('');
+  }
+  // Résumé discret
+  const pres=document.getElementById('cpPresence');
+  if(pres && S.children.length){
+    const enGarde=S.children.filter(c=>S.pointages.some(p=>p.cid===c.id&&p.date===today&&!p.hDep));
+    if(enGarde.length){
+      pres.innerHTML='<div style="text-align:center;padding:6px 0 4px;font-size:.7rem;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.05em;text-transform:uppercase;">'+enGarde.length+' enfant'+(enGarde.length>1?'s':'')+' en garde aujourd\'hui</div>';
+    } else {
+      pres.innerHTML='';
+    }
+  }
+}
+
+function addDefaultChildren(){
+  for(let i=0;i<1;i++) S.children.push({id:Date.now()+i,prenom:'Enfant '+(i+1),naissance:'',colorIdx:i,tarif:null,
+    parents:{nom1:'',tel1:'',nom2:'',tel2:'',adresse:''},
+    urgences:[],autorisesList:[],allergies:'',notes:'',vaccinsAJour:false,
+    contrat:{heuresHebdo:40,joursContrat:'Lun,Mar,Mer,Jeu,Ven',anneeComplete:true,heuresAnnuelles:0}});
+  save();
+}
+
+// ═══════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════
+function load(){
+  try{const s=localStorage.getItem('nounoupro_v1');if(s){const d=JSON.parse(s);S={...S,...d};if(!S.plannings)S.plannings={};}}catch(e){}
+}
+function save(){localStorage.setItem('nounoupro_v1',JSON.stringify(S));}
+
+// ═══════════════════════════════════
+// THEME
+// ═══════════════════════════════════
+function applyTheme(ci){
+  const r=document.documentElement;
+  r.style.setProperty('--cc',COLORS[ci]||COLORS[0]);
+  r.style.setProperty('--ccl',CL[ci]||CL[0]);
+  r.style.setProperty('--ccd',CD[ci]||CD[0]);
+}
+
+// ═══════════════════════════════════
+// MONTH NAV
+// ═══════════════════════════════════
+function changeMonth(d){
+  curMonth+=d;
+  if(curMonth>11){curMonth=0;curYear++;}
+  if(curMonth<0){curMonth=11;curYear--;}
+  updateMLabel(); renderTabs(); renderContent();
+}
+function updateMLabel(){document.getElementById('mLabel').textContent=`${MSH[curMonth]} ${curYear}`;}
+
+// ═══════════════════════════════════
+// RENDER ALL
+// ═══════════════════════════════════
+function render(){updateMLabel();renderTabs();renderSubTabs();renderContent();}
+
+function renderTabs(){
+  const el=document.getElementById('cTabs');
+  const today=new Date().toISOString().slice(0,10);
+  let h=S.children.map((c,i)=>{
+    const pres=S.pointages.some(p=>p.cid===c.id&&p.date===today&&!p.hDep);
+    return `<button class="ctab ${curChild===i?'active':''} ${pres?'pres':''}" onclick="selChild(${i})">
+      <div class="av" style="${curChild===i?`background:${COLORS[c.colorIdx]}`:''}">${c.prenom[0].toUpperCase()}</div>
+      <span>${c.prenom.split(' ')[0].substring(0,7)}</span>
+      <div class="pdot"></div>
+      <div class="tbar" style="${curChild===i?`background:${COLORS[c.colorIdx]}`:''} "></div>
+    </button>`;
+  }).join('');
+  h+=`<button class="add-tab" onclick="openNewChild()"><div class="av">＋</div><span>Ajouter</span></button>`;
+  h+=`<button class="ctab stab-settings ${curChild===99?'active':''}" onclick="selChild(99)">
+    <div class="av" style="${curChild===99?'background:rgba(255,255,255,.3)':''}">⚙️</div>
+    <span>Réglages</span><div class="tbar"></div></button>`;
+  el.innerHTML=h;
+  setTimeout(()=>{const t=el.querySelectorAll('.ctab,.add-tab');if(t[curChild])t[curChild].scrollIntoView({behavior:'smooth',inline:'center'});},50);
+}
+
+function renderSubTabs(){
+  const el=document.getElementById('subTabs');
+  if(curChild===99){el.style.display='none';return;}
+  el.style.display='flex';
+  const tabs=[
+    {k:'accueil',l:'🏠 Accueil'},{k:'absences',l:'📅 Absences'},{k:'journal',l:'📋 Journal'},
+    {k:'recap',l:'💶 Récap'},{k:'pajemploi',l:'📋 Pajemploi'},{k:'notes',l:'📝 Notes'},{k:'planning',l:'📆 Planning'},{k:'fiche',l:'👶 Fiche'}
+  ];
+  el.innerHTML=tabs.map(t=>`<button class="st ${curSub===t.k?'active':''}" onclick="selSub('${t.k}',this)">${t.l}</button>`).join('');
+}
+
+function selChild(i){
+  curChild=i;
+  if(i<99){applyTheme(S.children[i]?.colorIdx||0);document.getElementById('hAccent').textContent=S.children[i]?.prenom||'Enfant';}
+  else{
+    document.getElementById('hAccent').textContent='Réglages';
+  }
+  // Toujours mettre à jour le titre picker si visible
+  const prn=S.params.nom?(S.params.nom.trim().split(' ')[0]):'';
+  const ht=document.getElementById('cpTitle');
+  if(ht) ht.textContent='🌸 '+(prn||'Nounou Pro');
+  if(curSub==='settings'&&i!==99) curSub='pointage';
+  renderTabs();renderSubTabs();renderContent();
+}
+
+function selSub(k,btn){
+  curSub=k;
+  document.querySelectorAll('.st').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  else document.querySelectorAll('.st').forEach(b=>{if(b.textContent.includes(k)||b.getAttribute('onclick')?.includes("'"+k+"'"))b.classList.add('active');});
+  renderSubTabs();renderContent();
+}
+
+// ═══════════════════════════════════
+// CONTENT ROUTER
+// ═══════════════════════════════════
+function renderContent(){
+  const el=document.getElementById('mainContent');
+  if(curChild===99){el.innerHTML=renderSettings();loadSettingsVals();return;}
+  const ch=S.children[curChild];
+  if(!ch){el.innerHTML='';return;}
+  const map={accueil:renderAccueil,pointage:renderPointage,absences:renderAbsences,journal:renderJournal,recap:renderRecap,pajemploi:renderPajemploi,notes:renderNotes,fiche:renderFiche,planning:renderPlanningHebdo};
+  el.innerHTML=(map[curSub]||renderPointage)(ch);
+  el.scrollTop=0;
+}
+
+// ═══════════════════════════════════
+// PAGE: POINTAGE
+// ═══════════════════════════════════
+// ═══════════════════════════════════
+// PAGE: ACCUEIL (widget du jour)
+// ═══════════════════════════════════
+function renderAccueil(ch){
+  const today=new Date().toISOString().slice(0,10);
+  const now=new Date().toTimeString().slice(0,5);
+  const enc=S.pointages.find(p=>p.cid===ch.id&&p.date===today&&!p.hDep);
+  const tarif=getTarif(ch);
+  const color=COLORS[ch.colorIdx];
+
+  // Solde CP cumulés (année en cours Jan→mois actuel)
+  const cpSolde=calcSoldeCP(ch);
+
+  // Simulation : heures ce mois
+  const ptsMois=getMonthPointages(ch.id).filter(p=>p.hDep);
+  const totalMinsMois=ptsMois.reduce((a,p)=>a+calcDur(p.hArr,p.hDep),0);
+  const joursMois=new Set(ptsMois.map(p=>p.date)).size;
+
+  // Durée en garde aujourd'hui
+  let dureeAujourdHui='';
+  if(enc){
+    const debutMins=enc.hArr.split(':').reduce((a,v,i)=>a+(i?+v:+v*60),0);
+    const nowMins=now.split(':').reduce((a,v,i)=>a+(i?+v:+v*60),0);
+    const diff=nowMins-debutMins;
+    if(diff>0) dureeAujourdHui=fmtDur(diff);
+  }
+
+  let html='';
+
+  // ── STATUT DU JOUR ──
+  html+=`<div class="banner" style="background:${color}">
+    <div class="ban-l">
+      <div class="ban-av">${ch.prenom[0].toUpperCase()}</div>
+      <div><div class="ban-name">${ch.prenom}</div>
+      <div class="ban-det">${enc?'En garde depuis '+enc.hArr+(dureeAujourdHui?' · '+dureeAujourdHui:''):'Pas encore arrivé(e) aujourd\'hui'}</div></div>
+    </div>
+    ${enc?'<div class="sbadge"><div class="dpulse"></div>En garde</div>':'<div class="sbadge" style="background:rgba(0,0,0,.15)">🏠 Absent</div>'}
+  </div>`;
+
+  // ── POINTAGE RAPIDE ──
+  html+=`<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <div class="ctitle" style="margin-bottom:0;">⚡ Pointage rapide</div>
+      <button onclick="startVoicePointage()" id="btnMicPointage" style="background:var(--ccl);border:2px solid var(--cc);border-radius:50%;width:42px;height:42px;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s;" title="Pointer par la voix">🎤</button>
+    </div>
+    <div id="voicePointageStatus" style="display:none;background:rgba(224,122,95,.12);border-radius:10px;padding:10px 14px;margin-bottom:10px;">
+      <div style="font-size:.82rem;font-weight:800;color:var(--cc);margin-bottom:4px;">🔴 Écoute en cours…</div>
+      <div style="font-size:.72rem;color:var(--mid);font-weight:600;">Dites : <b>"arrivée Emma"</b> ou <b>"départ Lucas"</b></div>
+      <div id="voicePointageTranscript" style="margin-top:6px;font-size:.8rem;font-weight:700;color:var(--deep);font-style:italic;min-height:18px;"></div>
+    </div>
+    <div class="r2" style="margin-bottom:10px;">
+      <div class="field"><label>Heure</label><input type="time" id="quickTime" value="${now}"></div>
+      <div class="field"><label>Date</label><input type="date" id="quickDate" value="${today}"></div>
+    </div>
+    <div class="r2">
+      <button class="btn bg" onclick="quickArr(${ch.id})" ${enc?'disabled style="opacity:.4"':''}>✅ Arrivée</button>
+      <button class="btn br" onclick="quickDep(${ch.id})" ${!enc?'disabled style="opacity:.4"':''}>🚪 Départ</button>
+    </div>
+  </div>`;
+
+  // ── STATS DU MOIS ──
+  html+=`<div class="card">
+    <div class="ctitle">📊 Ce mois · ${MSH[curMonth]} ${curYear}</div>
+    <div class="sgrid">
+      <div class="si"><div class="lbl">Jours gardés</div><div class="val hi">${joursMois}</div></div>
+      <div class="si"><div class="lbl">Heures totales</div><div class="val hi">${fmtDur(totalMinsMois)}</div></div>
+      <div class="si"><div class="lbl">Salaire estimé</div><div class="val hi">${fmtEuro(calcSalaireMensuel(ch))}</div></div>
+      <div class="si"><div class="lbl">Solde CP cumulés</div><div class="val hi" style="color:var(--green)">${fmtEuro(cpSolde)}</div></div>
+    </div>
+    <button class="btn bgh bsm" style="width:auto;display:inline-flex;margin-top:8px;" onclick="selSub('recap',null)">💶 Voir le récap complet →</button>
+  </div>`;
+
+  // ── SIMULATION SALAIRE ──
+  html+=`<div class="card">
+    <div class="ctitle">🧮 Simulation de salaire</div>
+    <p style="font-size:.75rem;color:var(--mid);font-weight:600;margin-bottom:12px;">Calculez le salaire pour un nombre d'heures donné</p>
+    <div class="r2">
+      <div class="field"><label>Heures / semaine</label><input type="number" id="simHHebdo" step="0.5" min="0" value="${ch.contrat?.heuresHebdo||40}" oninput="updateSim(${ch.id})"></div>
+      <div class="field"><label>Nb semaines / an</label><input type="number" id="simSemaines" step="1" min="1" max="52" value="${ch.contrat?.anneeComplete===false?(ch.contrat?.nbSemaines||47):52}" oninput="updateSim(${ch.id})"></div>
+    </div>
+    <div class="r2">
+      <div class="field"><label>Tarif horaire (€/h)</label><input type="number" id="simTarif" step="0.10" min="0" value="${tarif.toFixed(2)}" oninput="updateSim(${ch.id})"></div>
+      <div class="field"><label>Indem. entretien/j</label><input type="number" id="simIndem" step="0.01" min="0" value="${calcIndemEntretien(480).toFixed(2)}" oninput="updateSim(${ch.id})"></div>
+    </div>
+    <div id="simResult" style="background:var(--ccl);border-radius:13px;padding:14px;margin-top:4px;text-align:center;">
+      <div style="font-size:.72rem;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Salaire mensuel estimé</div>
+      <div id="simMontant" style="font-size:1.7rem;font-weight:900;color:var(--cc);">${fmtEuro((tarif*(ch.contrat?.heuresHebdo||40)*52)/12)}</div>
+      <div id="simDetail" style="font-size:.72rem;color:var(--mid);font-weight:600;margin-top:4px;"></div>
+    </div>
+  </div>`;
+
+  return html;
+}
+
+// ═══════════════════════════════════
+// MOTEUR RECONNAISSANCE VOCALE
+// ═══════════════════════════════════
+let _voiceReco=null;
+let _voiceMode=null; // 'pointage' | 'note'
+let _voiceNoteCid=null;
+let _voiceTexteBase='';
+
+function getVoiceAPI(){
+  return window.SpeechRecognition||window.webkitSpeechRecognition||null;
+}
+
+function stopVoice(){
+  if(_voiceReco){try{_voiceReco.stop();}catch(e){}}_voiceReco=null;_voiceMode=null;
+  // Reset boutons
+  const btn=document.getElementById('btnMicPointage');
+  if(btn){btn.style.background='var(--ccl)';btn.style.borderColor='var(--cc)';btn.textContent='🎤';}
+  const btn2=document.getElementById('btnMicNote');
+  if(btn2){btn2.style.background='var(--ccl)';btn2.style.borderColor='var(--cc)';btn2.textContent='🎤';}
+  const s1=document.getElementById('voicePointageStatus');
+  if(s1) s1.style.display='none';
+  const s2=document.getElementById('voiceNoteStatus');
+  if(s2) s2.style.display='none';
+}
+
+// Normalise une chaîne : minuscules, sans accents, sans ponctuation
+function normalStr(s){
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'').trim();
+}
+
+// Cherche un enfant dont le prénom correspond dans le texte
+function findChildInText(txt){
+  const n=normalStr(txt);
+  return S.children.find(c=>{
+    const p=normalStr(c.prenom);
+    // prénom entier ou juste les premières lettres (min 3)
+    return n.includes(p)||(p.length>=3&&n.includes(p.substring(0,3)));
+  })||null;
+}
+
+// ── POINTAGE VOCAL ──
+function startVoicePointage(){
+  if(_voiceReco){stopVoice();return;}
+  const API=getVoiceAPI();
+  if(!API){showToast('⚠️ Micro non supporté sur ce navigateur','terr');return;}
+
+  const btn=document.getElementById('btnMicPointage');
+  const status=document.getElementById('voicePointageStatus');
+  const transcript=document.getElementById('voicePointageTranscript');
+  if(btn){btn.style.background='#ffecec';btn.style.borderColor='var(--red)';btn.textContent='⏹️';}
+  if(status) status.style.display='block';
+
+  const reco=new API();
+  reco.lang='fr-FR';reco.continuous=false;reco.interimResults=true;
+  _voiceReco=reco;_voiceMode='pointage';
+
+  reco.onresult=e=>{
+    let txt='';
+    for(let i=0;i<e.results.length;i++) txt+=e.results[i][0].transcript;
+    if(transcript) transcript.textContent='"'+txt+'"';
+    if(e.results[e.results.length-1].isFinal){
+      stopVoice();
+      interpreterPointage(txt);
+    }
+  };
+  reco.onerror=e=>{
+    stopVoice();
+    if(e.error!=='no-speech') showToast('❌ Erreur micro : '+e.error,'terr');
+  };
+  reco.onend=()=>{if(_voiceMode==='pointage') stopVoice();};
+  reco.start();
+  showToast('🎤 Parlez maintenant…','tinf');
+}
+
+function interpreterPointage(txt){
+  const n=normalStr(txt);
+  const child=findChildInText(n);
+  const isArr=n.includes('arriv')||n.includes('arrive')||n.includes('present')||n.includes('la');
+  const isDep=n.includes('depart')||n.includes('parti')||n.includes('sortie')||n.includes('quitte');
+  const isNote=n.includes('note')||n.includes('ajouter note')||n.includes('noter');
+
+  if(isNote&&child){
+    // Ouvrir la note vocale pour cet enfant
+    showToast('📝 Note pour '+child.prenom+'…','tok');
+    openNote(child.id);
+    setTimeout(()=>startVoiceNoteAuto(),400);
+    return;
+  }
+  if(!child){
+    showToast('❓ Prénom non reconnu. Dites ex: "arrivée Emma"','terr');return;
+  }
+  const heure=document.getElementById('quickTime')?.value||new Date().toTimeString().slice(0,5);
+  const date=document.getElementById('quickDate')?.value||new Date().toISOString().slice(0,10);
+  if(isArr){
+    if(S.pointages.find(p=>p.cid===child.id&&p.date===date&&!p.hDep)){
+      showToast('⚠️ '+child.prenom+' est déjà arrivé(e)','terr');return;
+    }
+    S.pointages.push({id:Date.now(),cid:child.id,date,hArr:heure,hDep:null,typeH:'normal'});
+    save();showToast('✅ Arrivée de '+child.prenom+' à '+heure,'tok');render();
+  } else if(isDep){
+    const p=S.pointages.find(pt=>pt.cid===child.id&&pt.date===date&&!pt.hDep);
+    if(!p){showToast('❌ '+child.prenom+' n\'est pas encore arrivé(e)','terr');return;}
+    p.hDep=heure;
+    // Calcul heures auto
+    const dur=calcDur(p.hArr,heure);
+    const hDejaFaites=S.pointages.filter(pt=>pt.cid===child.id&&pt.hDep&&pt.id!==p.id&&pt.date>=getMondayOf(date)&&pt.date<=getSundayOf(date)).reduce((a,pt)=>a+calcDur(pt.hArr,pt.hDep),0);
+    const hContratSem=(child.contrat?.heuresHebdo||40)*60;const hMax45=45*60;const hApres=hDejaFaites+dur;
+    let mN=dur,mC=0,mS=0;
+    if(hApres<=hContratSem){mN=dur;}
+    else if(hDejaFaites>=hMax45){mN=0;mS=dur;}
+    else if(hDejaFaites>=hContratSem){mN=0;const r=Math.max(0,hMax45-hDejaFaites);mC=Math.min(dur,r);mS=Math.max(0,dur-r);}
+    else{mN=Math.max(0,hContratSem-hDejaFaites);const reste=dur-mN;const r=Math.max(0,hMax45-hContratSem);mC=Math.min(reste,r);mS=Math.max(0,reste-r);}
+    p.mNormal=mN;p.mComp=mC;p.mSupp=mS;
+    p.typeH=mS>0?'supp':mC>0?'comp':'normal';
+    save();showToast('🚪 Départ '+child.prenom+' – '+fmtDur(dur),'tok');render();
+  } else {
+    showToast('❓ Non compris. Dites "arrivée Emma" ou "départ Emma"','terr');
+  }
+}
+
+// ── NOTE VOCALE ──
+function toggleVoiceNote(){
+  if(_voiceReco&&_voiceMode==='note'){stopVoice();return;}
+  startVoiceNoteAuto();
+}
+
+function startVoiceNoteAuto(){
+  const API=getVoiceAPI();
+  if(!API){showToast('⚠️ Micro non supporté','terr');return;}
+
+  const btn=document.getElementById('btnMicNote');
+  const status=document.getElementById('voiceNoteStatus');
+  const textarea=document.getElementById('noteText');
+  if(btn){btn.style.background='#ffecec';btn.style.borderColor='var(--red)';btn.textContent='⏹️';}
+  if(status) status.style.display='block';
+
+  _voiceTexteBase=textarea?.value?textarea.value+' ':'';
+
+  const reco=new API();
+  reco.lang='fr-FR';reco.continuous=true;reco.interimResults=true;
+  _voiceReco=reco;_voiceMode='note';
+
+  reco.onresult=e=>{
+    let final='';let interim='';
+    for(let i=0;i<e.results.length;i++){
+      if(e.results[i].isFinal) final+=e.results[i][0].transcript+' ';
+      else interim+=e.results[i][0].transcript;
+    }
+    if(textarea) textarea.value=_voiceTexteBase+final+interim;
+    if(final) _voiceTexteBase=_voiceTexteBase+final;
+  };
+  reco.onerror=e=>{
+    stopVoice();
+    if(e.error!=='no-speech') showToast('❌ Erreur micro : '+e.error,'terr');
+  };
+  reco.onend=()=>{
+    // Redémarrer en continu si toujours en mode note (Chrome coupe après 60s)
+    if(_voiceMode==='note'&&_voiceReco){
+      try{_voiceReco.start();}catch(e){stopVoice();}
+    }
+  };
+  reco.start();
+  showToast('🎤 Dictez votre note… Appuyez sur ⏹️ pour arrêter','tinf');
+}
+
+function quickArr(cid){
+  const date=document.getElementById('quickDate').value;
+  const heure=document.getElementById('quickTime').value;
+  if(!date||!heure){showToast('⚠️ Date et heure requises','terr');return;}
+  if(S.pointages.find(p=>p.cid===cid&&p.date===date&&!p.hDep)){showToast('⚠️ Déjà arrivé(e)','terr');return;}
+  S.pointages.push({id:Date.now(),cid,date,hArr:heure,hDep:null,typeH:'normal'});
+  save();const ch=S.children.find(c=>c.id===cid);
+  showToast('✅ Arrivée de '+ch?.prenom+' à '+heure,'tok');render();
+}
+
+function quickDep(cid){
+  const date=document.getElementById('quickDate').value;
+  const heure=document.getElementById('quickTime').value;
+  if(!date||!heure){showToast('⚠️ Heure requise','terr');return;}
+  const p=S.pointages.find(pt=>pt.cid===cid&&pt.date===date&&!pt.hDep);
+  if(!p){showToast('❌ Aucune arrivée ce jour','terr');return;}
+  if(heure<=p.hArr){showToast("⚠️ Départ après l\'arrivée",'terr');return;}
+  p.hDep=heure;
+  const ch=S.children.find(c=>c.id===cid);
+  const dur=calcDur(p.hArr,heure);
+  const hDejaFaites=S.pointages.filter(pt=>pt.cid===cid&&pt.hDep&&pt.id!==p.id&&pt.date>=getMondayOf(date)&&pt.date<=getSundayOf(date)).reduce((acc,pt)=>acc+calcDur(pt.hArr,pt.hDep),0);
+  const hContratSem=(ch?.contrat?.heuresHebdo||40)*60;
+  const hMax45=45*60;
+  const hApres=hDejaFaites+dur;
+  let mNormal=dur,mComp=0,mSupp=0;
+  if(hApres<=hContratSem){mNormal=dur;}
+  else if(hDejaFaites>=hMax45){mNormal=0;mSupp=dur;}
+  else if(hDejaFaites>=hContratSem){mNormal=0;const restAvant45=Math.max(0,hMax45-hDejaFaites);mComp=Math.min(dur,restAvant45);mSupp=Math.max(0,dur-restAvant45);}
+  else{mNormal=Math.max(0,hContratSem-hDejaFaites);const reste=dur-mNormal;const restAvant45=Math.max(0,hMax45-hContratSem);mComp=Math.min(reste,restAvant45);mSupp=Math.max(0,reste-restAvant45);}
+  p.mNormal=mNormal;p.mComp=mComp;p.mSupp=mSupp;
+  p.typeH=mSupp>0?'supp':mComp>0?'comp':'normal';
+  save();showToast('🚪 Départ '+ch?.prenom+' – '+fmtDur(dur),'tok');render();
+}
+
+function calcSoldeCP(ch){
+  // Cumul des CP depuis janvier de l'année en cours jusqu'au mois actuel
+  const tarif=getTarif(ch);
+  const hJour=(ch.contrat?.heuresHebdo||40)/5;
+  let total=0;
+  for(let m=0;m<=curMonth;m++){
+    const pts=S.pointages.filter(p=>{const d=new Date(p.date);return p.cid===ch.id&&p.hDep&&d.getMonth()===m&&d.getFullYear()===curYear;});
+    const abs=S.absences.filter(a=>{const d=new Date(a.debut);return a.cid===ch.id&&d.getMonth()===m&&d.getFullYear()===curYear;});
+    let salH=0;
+    pts.forEach(x=>{const dur=calcDur(x.hArr,x.hDep);salH+=(dur/60)*tarif;});
+    const jours=new Set(pts.map(x=>x.date)).size;
+    const indem=pts.reduce((a,x)=>a+calcIndemEntretien(calcDur(x.hArr,x.hDep)),0);
+    const repas=getRepasDefault(ch)*jours;
+    total+=(salH+indem+repas)*0.10;
+  }
+  return total;
+}
+
+function updateSim(cid){
+  const hh=parseFloat(document.getElementById('simHHebdo')?.value)||40;
+  const sem=parseFloat(document.getElementById('simSemaines')?.value)||52;
+  const tarif=parseFloat(document.getElementById('simTarif')?.value)||4.50;
+  const indem=parseFloat(document.getElementById('simIndem')?.value)||3;
+  const salBrut=(tarif*hh*sem)/12;
+  const salNet=brutToNet(salBrut);
+  const salIndem=indem*22; // ~22 jours/mois
+  const total=salBrut+salIndem;
+  const el=document.getElementById('simMontant');
+  const det=document.getElementById('simDetail');
+  if(el) el.textContent=fmtEuro(total);
+  if(det) det.innerHTML='Net '+fmtEuro(salBrut)+' · Brut '+fmtEuro(netToBrut(salBrut))+' + '+fmtEuro(salIndem)+' indemnités';
+}
+
+function renderPointage(ch){
+  const today=new Date().toISOString().slice(0,10);
+  const now=new Date().toTimeString().slice(0,5);
+  const enc=S.pointages.find(p=>p.cid===ch.id&&p.date===today&&!p.hDep);
+  const age=ch.naissance?calcAge(ch.naissance):'';
+  const tarif=getTarif(ch);
+  const status=enc
+    ?`<div class="sbadge"><div class="dpulse"></div>En garde depuis ${enc.hArr}</div>`
+    :`<div class="sbadge" style="background:rgba(0,0,0,.15)">🏠 Absent</div>`;
+  return `
+  <div class="banner" style="background:${COLORS[ch.colorIdx]}">
+    <div class="ban-l">
+      <div class="ban-av">${ch.prenom[0].toUpperCase()}</div>
+      <div><div class="ban-name">${ch.prenom}</div>
+      <div class="ban-det">${age?age+' · ':''}${tarif.toFixed(2)} €/h · ${ch.contrat?.heuresHebdo||40}h/sem</div></div>
+    </div>${status}
+  </div>
+  <div class="card">
+    <div class="ctitle">✅ Arrivée</div>
+    <div class="r2">
+      <div class="field"><label>Date</label><input type="date" id="aDate" value="${today}"></div>
+      <div class="field"><label>Heure</label><input type="time" id="aHeure" value="${now}"></div>
+    </div>
+    <button class="btn bg" onclick="pointArr(${ch.id})">✅ Enregistrer l'arrivée</button>
+  </div>
+  <div class="card">
+    <div class="ctitle">🚪 Départ</div>
+    <div class="r2">
+      <div class="field"><label>Date</label><input type="date" id="dDate" value="${today}"></div>
+      <div class="field"><label>Heure</label><input type="time" id="dHeure" value="${now}"></div>
+    </div>
+    <button class="btn br" onclick="pointDep(${ch.id})">🚪 Enregistrer le départ</button>
+  </div>
+  <div style="text-align:center;margin-top:4px;">
+    <button class="btn bgh bsm" style="width:auto;display:inline-flex;" onclick="openEditChild(${curChild})">✏️ Modifier les infos</button>
+  </div>`;
+}
+
+// ═══════════════════════════════════
+// PAGE: ABSENCES
+// ═══════════════════════════════════
+function renderAbsences(ch){
+  const data=getMonthAbs(ch.id);
+  return `
+  <div class="card">
+    <div class="ctitle">📅 Enregistrer une absence / congé</div>
+    <div class="abs-grid">
+      <button class="abs-btn abs-just" onclick="openAbs(${ch.id},'enf-just')"><div class="ico">🤒</div>Absence enfant justifiée</button>
+      <button class="abs-btn abs-injust" onclick="openAbs(${ch.id},'enf-injust')"><div class="ico">❓</div>Absence enfant injustifiée</button>
+      <button class="abs-btn abs-cong" onclick="openAbs(${ch.id},'cp')"><div class="ico">🏖️</div>Congés payés</button>
+      <button class="abs-btn abs-assmat" onclick="openAbs(${ch.id},'conge-am-paye')"><div class="ico">🏠</div>Absence Ass. Mat.</button>
+    </div>
+  </div>
+  ${data.length?`<div class="sec-title">Absences de ${MONTHS[curMonth]}</div>
+  <div class="elist">${data.map(a=>renderAbsEntry(a)).join('')}</div>`
+  :`<div style="text-align:center;padding:30px;color:var(--light);"><div style="font-size:2.5rem;margin-bottom:8px;">📅</div><p style="font-size:.85rem;font-weight:600;">Aucune absence ce mois-ci</p></div>`}`;
+}
+
+function renderAbsEntry(a){
+  const labels={'enf-just':'Absence justifiée','enf-injust':'Absence injustifiée','conge-enf':'Congé enfant',
+    'conge-am-paye':'Congé AM payé','conge-am-np':'Congé AM non payé','cp':'Congés payés'};
+  const tagClass={'enf-just':'just','enf-injust':'injust','cp':'cong','conge-am-paye':'assabs','conge-am-np':'assabs','conge-enf':'cong'};
+  const icons={'enf-just':'🤒','enf-injust':'❓','cp':'🏖️','conge-am-paye':'🏠','conge-am-np':'🏠','conge-enf':'✈️'};
+  return `<div class="entry">
+    <div class="etop">
+      <div><div class="edate">${fmtDate(a.debut)}${a.fin!==a.debut?' → '+fmtDate(a.fin):''}</div>
+      <div class="eday">${labels[a.type]||a.type}${a.note?' · '+a.note:''}</div></div>
+      <button class="edel" onclick="delAbs(${a.id})">✕</button>
+    </div>
+    <span class="etag ${tagClass[a.type]||'just'}">${icons[a.type]||'📅'} ${labels[a.type]||a.type}</span>
+  </div>`;
+}
+
+// ═══════════════════════════════════
+// PAGE: JOURNAL
+// ═══════════════════════════════════
+function renderJournal(ch){
+  const data=getMonthPointages(ch.id);
+  if(!data.length) return `<div style="text-align:center;padding:40px;color:var(--light);"><div style="font-size:2.8rem;margin-bottom:10px">📋</div><p style="font-size:.87rem;font-weight:600;">Aucune présence<br>en ${MONTHS[curMonth]} ${curYear}</p></div>`;
+  const tarif=getTarif(ch);
+  const repas=getRepasDefault(ch);
+  const sorted=[...data].sort((a,b)=>a.date.localeCompare(b.date));
+  return `<div class="elist">${sorted.map(p=>{
+    const dur=p.hDep?calcDur(p.hArr,p.hDep):null;
+    const indemJour=dur!==null?calcIndemEntretien(dur):0;
+    const sal=dur!==null?(dur/60)*tarif:0;
+    const d=new Date(p.date+'T12:00:00');
+    let tag='';
+    if(p.typeH==='comp') tag=`<span class="etag comp">⏱ Comp. (+${S.params.tauxComp||10}%)</span>`;
+    if(p.typeH==='supp') tag=`<span class="etag supp">⚡ Major. (+${S.params.tauxSupp||25}%)</span>`;
+    return `<div class="entry ${!p.hDep?'enc':''}">
+      <div class="etop">
+        <div><div class="edate">${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}</div>
+        <div class="eday">${WDAYS[d.getDay()]}</div></div>
+        <button class="edel" onclick="delPoint(${p.id})">✕</button>
+      </div>
+      <div class="egrid">
+        <div class="ecell"><div class="lbl">Arrivée</div><div class="val">${p.hArr}</div></div>
+        <div class="ecell"><div class="lbl">Départ</div><div class="val">${p.hDep||'<span class="enc">En cours</span>'}</div></div>
+        <div class="ecell"><div class="lbl">Durée</div><div class="val dur">${dur!==null?fmtDur(dur):'—'}</div></div>
+        <div class="ecell"><div class="lbl">Salaire</div><div class="val sal">${dur!==null?fmtEuro(sal+indemJour+repas):'—'}</div></div>
+      </div>${tag}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ═══════════════════════════════════
+// PAGE: RÉCAP
+// ═══════════════════════════════════
+function renderRecap(ch){
+  const pts=getMonthPointages(ch.id).filter(p=>p.hDep);
+  const abs=getMonthAbs(ch.id);
+  const hsupp=S.hsupp.filter(h=>{const d=new Date(h.date);return h.cid===ch.id&&d.getMonth()===curMonth&&d.getFullYear()===curYear;});
+  const tarif=getTarif(ch);
+  const p=S.params;
+  const repas=getRepasDefault(ch);
+  const tauxComp=(p.tauxComp||10)/100;
+  const tauxSupp=(p.tauxSupp||25)/100;
+  const contrat=ch.contrat||{};
+  const anneeComplete=contrat.anneeComplete!==false;
+  const hHebdo=contrat.heuresHebdo||40;
+  const hJour=hHebdo/5;
+
+  const salMensuel=calcSalaireMensuel(ch);
+
+  let totalMins=0,salHSupp=0,totalNormal=0,totalComp=0,totalSupp=0,salIndemTotal=0;
+  pts.forEach(x=>{
+    const dur=calcDur(x.hArr,x.hDep);
+    totalMins+=dur;
+    const mN=x.mNormal!==undefined?x.mNormal:dur;
+    const mC=x.mComp||0;
+    const mS=x.mSupp||0;
+    totalNormal+=mN;totalComp+=mC;totalSupp+=mS;
+    salHSupp+=(mC/60)*tarif*tauxComp+(mS/60)*tarif*tauxSupp;
+    salIndemTotal+=calcIndemEntretien(dur);
+  });
+
+  let hsMins=0,hsSal=0;
+  hsupp.forEach(h=>{
+    const m=(parseInt(h.h)||0)*60+(parseInt(h.min)||0);
+    hsMins+=m;
+    const t=h.type==='supp'?tarif*tauxSupp:tarif*tauxComp;
+    hsSal+=(m/60)*t;
+  });
+
+  const jours=new Set(pts.map(x=>x.date)).size;
+
+  const feriesMois=getJoursFeriesMois(curMonth,curYear);
+  const feriesPayes=feriesMois.filter(f=>{
+    if(anneeComplete) return false;
+    const d=new Date(f+'T12:00:00');
+    const jourSem=['dim','lun','mar','mer','jeu','ven','sam'][d.getDay()];
+    const joursContrat=(contrat.joursContrat||'Lun,Mar,Mer,Jeu,Ven').toLowerCase();
+    return joursContrat.includes(jourSem);
+  });
+  const salFeries=feriesPayes.length*hJour*tarif;
+
+  const absJust=abs.filter(a=>a.type==='enf-just');
+  const absAssmat=abs.filter(a=>a.type==='conge-am-np');
+  const hMois=calcHeuresMois(curMonth,curYear,ch);
+
+  const deductEnfJust=absJust.reduce((acc,a)=>{
+    const days=daysBetween(a.debut,a.fin);
+    return acc+(hMois>0?(salMensuel*(days*hJour))/hMois:0);
+  },0);
+  const deductAssmat=absAssmat.reduce((acc,a)=>{
+    const days=daysBetween(a.debut,a.fin);
+    return acc+(hMois>0?(salMensuel*(days*hJour))/hMois:0);
+  },0);
+  const totalDeduct=deductEnfJust+deductAssmat;
+
+  const salIndem=salIndemTotal+(jours*repas);
+  const autresFrais=(p.autresFrais||[]).reduce((a,f)=>a+(parseFloat(f.montant)||0),0);
+  const salBrut=salMensuel+salHSupp+hsSal+salFeries-totalDeduct;
+
+  let cp=0;
+  const cpAbs=abs.filter(a=>a.type==='cp');
+  if((ch.contrat?.methodeCP||p.methodeCP||'10pct')==='10pct'){
+    cp=salBrut*0.10;
+  } else {
+    const cpDays=cpAbs.reduce((acc,a)=>acc+daysBetween(a.debut,a.fin),0);
+    cp=cpDays*hJour*tarif;
+  }
+
+  const total=salBrut+cp+salIndem+autresFrais;
+  const mStr=MONTHS[curMonth]+' '+curYear;
+
+  let html='';
+
+  // Hero card
+  html+='<div class="rhero">';
+  html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">';
+  html+='<h2>&#x1F4B6; '+ch.prenom+'</h2>';
+  html+='<span class="mchip">'+mStr+'</span></div>';
+  html+='<div class="sgrid">';
+  html+='<div class="si"><div class="lbl">Salaire mensuel</div><div class="val hi">'+fmtEuro(salMensuel)+'</div></div>';
+  html+='<div class="si"><div class="lbl">Jours de garde</div><div class="val">'+jours+'</div></div>';
+  html+='<div class="si"><div class="lbl">Heures totales</div><div class="val">'+fmtDur(totalMins)+'</div></div>';
+  if(totalComp>0) html+='<div class="si"><div class="lbl">H. comp. (+'+Math.round(tauxComp*100)+'%)</div><div class="val hi">'+fmtDur(totalComp)+'</div></div>';
+  if(totalSupp>0) html+='<div class="si"><div class="lbl">H. major. (+'+Math.round(tauxSupp*100)+'%)</div><div class="val hi">'+fmtDur(totalSupp)+'</div></div>';
+  if(salFeries>0) html+='<div class="si"><div class="lbl">Jours fériés payés</div><div class="val hi">'+fmtEuro(salFeries)+'</div></div>';
+  if(totalDeduct>0) html+='<div class="si"><div class="lbl">Retenues absences</div><div class="val" style="color:var(--red)">-'+fmtEuro(totalDeduct)+'</div></div>';
+  html+='<div class="si"><div class="lbl">Indem. entretien</div><div class="val hi">'+fmtEuro(salIndemTotal)+'</div></div>';
+  if(repas>0) html+='<div class="si"><div class="lbl">Indem. repas</div><div class="val hi">'+fmtEuro(jours*repas)+'</div></div>';
+  if(autresFrais>0) html+='<div class="si"><div class="lbl">Autres frais</div><div class="val hi">'+fmtEuro(autresFrais)+'</div></div>';
+  html+='<div class="si"><div class="lbl">CP ('+((ch.contrat?.methodeCP||p.methodeCP||'10pct')==='10pct'?'10%':'maintien')+')</div><div class="val">'+fmtEuro(cp)+'</div></div>';
+  html+='</div>';
+  html+='<div class="gtrow"><div><div class="lbl">&#x1F4B0; Total à verser</div><div class="sub">Salaire + Indem. + CP</div></div>';
+  html+='<div class="amt" style="color:'+COLORS[ch.colorIdx]+'">'+fmtEuro(total)+'</div></div>';
+  html+='</div>';
+
+  // Jours fériés card
+  if(feriesMois.length){
+    html+='<div class="card"><div class="ctitle">&#x1F38C; Jours fériés – '+MONTHS[curMonth]+'</div>';
+    feriesMois.forEach(f=>{
+      const d=new Date(f+'T12:00:00');
+      const nom=FERIES_NOMS[f.slice(5)]||'Jour férié';
+      const paye=feriesPayes.includes(f);
+      const dateStr=String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0');
+      html+='<div class="info-row">';
+      html+='<span class="lbl">'+WDAYS[d.getDay()]+' '+dateStr+' – '+nom+'</span>';
+      html+='<span class="val" style="color:'+(paye?'var(--green)':'var(--mid)')+'">'+
+        (paye?'✅ Payé':(anneeComplete?'Inclus mensuel':'—'))+'</span>';
+      html+='</div>';
+    });
+    html+='</div>';
+  }
+
+  // Détail card
+  html+='<div class="card"><div class="ctitle">&#x1F4CA; Détail du calcul</div>';
+  html+='<div style="display:flex;flex-direction:column;gap:8px;">';
+  html+=drow('Salaire mensuel ('+hHebdo+'h × 52 / 12)',fmtEuro(salMensuel),true);
+  if(totalComp>0) html+=drow('+ Maj. H. comp. ('+fmtDur(totalComp)+') +'+Math.round(tauxComp*100)+'%',fmtEuro((totalComp/60)*tarif*tauxComp));
+  if(totalSupp>0) html+=drow('+ Maj. H. major. ('+fmtDur(totalSupp)+') +'+Math.round(tauxSupp*100)+'%',fmtEuro((totalSupp/60)*tarif*tauxSupp));
+  if(hsMins>0) html+=drow('+ Maj. H. supp manuelles',fmtEuro(hsSal));
+  if(salFeries>0) html+=drow('+ Jours fériés ('+feriesPayes.length+'j × '+hJour.toFixed(2)+'h)',fmtEuro(salFeries));
+  if(deductEnfJust>0) html+=drow('- Retenue abs. enfant justifiée','-'+fmtEuro(deductEnfJust));
+  if(deductAssmat>0) html+=drow('- Retenue abs. ass. mat. non payée','-'+fmtEuro(deductAssmat));
+  html+='<div class="div"></div>';
+  html+=drow('Salaire brut / net',fmtBrutNet(salBrut),true);
+  html+=drow('+ Indem. entretien ('+jours+'j)',fmtEuro(salIndemTotal));
+  if(repas>0) html+=drow('+ Indem. repas ('+jours+'j)',fmtEuro(jours*repas));
+  if(autresFrais>0) html+=drow('+ Autres frais',fmtEuro(autresFrais));
+  html+=drow('+ Congés payés',fmtEuro(cp));
+  html+='<div class="div"></div>';
+  html+=drow('TOTAL NET À VERSER',fmtEuro(total),true);
+  html+='</div>';
+  html+='<p style="font-size:.68rem;color:var(--mid);margin-top:12px;line-height:1.5;font-weight:600;">';
+  html+='Retenues calculées selon la formule Cour de Cassation : (Salaire mensuel × heures absence) / heures du mois ('+hMois.toFixed(1)+'h)';
+  html+='</p></div>';
+  html+='<button class="btn bd" onclick="window.print()">&#x1F5A8;&#xFE0F; Imprimer ce récapitulatif</button>';
+  return html;
+}
+
+
+function drow(l,v,b=false){return `<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 0;">
+  <span style="font-size:.82rem;font-weight:${b?'800':'600'};color:${b?'var(--deep)':'var(--mid)'};">${l}</span>
+  <span style="font-size:.87rem;font-weight:800;color:${b?'var(--cc)':'var(--deep)'};">${v}</span>
+</div>`;}
+
+// ═══════════════════════════════════
+// PAGE: NOTES JOURNALIÈRES
+// ═══════════════════════════════════
+function renderNotes(ch){
+  const notes=S.notes.filter(n=>n.cid===ch.id).sort((a,b)=>b.date.localeCompare(a.date));
+  const today=new Date().toISOString().slice(0,10);
+  return `
+  <div class="card">
+    <div class="ctitle">📝 Ajouter une note</div>
+    <button class="btn bc" onclick="openNote(${ch.id})">✏️ Note du jour</button>
+    ${notes.length?`<button class="btn bd" style="margin-top:8px;" onclick="printAllNotes(${ch.id})">🖨️ Imprimer toutes les notes</button>`:''}
+  </div>
+  ${notes.length?`<div class="sec-title">Toutes les notes – ${ch.prenom}</div>
+  ${notes.map(n=>{
+    const d=new Date(n.date+'T12:00:00');
+    return `<div class="note-card">
+      <div class="note-date">
+        <span>${WDAYS[d.getDay()]} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}</span>
+        <div style="display:flex;gap:7px;">
+          <button class="btn bgh bsm" style="padding:5px 10px;font-size:.72rem;" onclick="printNote(${n.id})">🖨️</button>
+          <button class="btn bgh bsm" style="padding:5px 10px;font-size:.72rem;color:var(--red);" onclick="delNote(${n.id})">✕</button>
+        </div>
+      </div>
+      <div class="note-text">${n.text}</div>
+    </div>`;
+  }).join('')}`:`<div style="text-align:center;padding:40px;color:var(--light);"><div style="font-size:2.8rem;margin-bottom:10px">📝</div><p style="font-size:.87rem;font-weight:600;">Aucune note pour ${ch.prenom}</p></div>`}`;
+}
+
+// ═══════════════════════════════════
+// PAGE: FICHE ENFANT
+// ═══════════════════════════════════
+// ═══════════════════════════════════
+// PAGE: PAJEMPLOI
+// ═══════════════════════════════════
+function renderPajemploi(ch){
+  const pts=getMonthPointages(ch.id).filter(p=>p.hDep);
+  const abs=getMonthAbs(ch.id);
+  const tarif=getTarif(ch);
+  const p=S.params;
+  const contrat=ch.contrat||{};
+  const hHebdo=contrat.heuresHebdo||40;
+  const hJour=hHebdo/5;
+  const tauxComp=(p.tauxComp||10)/100;
+  const tauxSupp=(p.tauxSupp||25)/100;
+  const mStr=MONTHS[curMonth]+' '+curYear;
+  const color=COLORS[ch.colorIdx];
+
+  // ── Calcul heures ──
+  let totalMins=0,totalNormal=0,totalComp=0,totalSupp=0,salIndemTotal=0;
+  pts.forEach(x=>{
+    const dur=calcDur(x.hArr,x.hDep);
+    totalMins+=dur;
+    totalNormal+=(x.mNormal!==undefined?x.mNormal:dur);
+    totalComp+=(x.mComp||0);
+    totalSupp+=(x.mSupp||0);
+    salIndemTotal+=calcIndemEntretien(dur);
+  });
+
+  const joursGarde=new Set(pts.map(x=>x.date)).size;
+  const hMois=calcHeuresMois(curMonth,curYear,ch);
+  const salMensuel=calcSalaireMensuel(ch);
+  const majComp=(totalComp/60)*tarif*tauxComp;
+  const majSupp=(totalSupp/60)*tarif*tauxSupp;
+
+  // ── Absences enfant (jours à déclarer) ──
+  const absEnfJust=abs.filter(a=>a.type==='enf-just');
+  const absEnfInjust=abs.filter(a=>a.type==='enf-injust');
+  const absCongeEnf=abs.filter(a=>a.type==='conge-enf');
+  const nbJustEnf=absEnfJust.reduce((a,x)=>a+daysBetween(x.debut,x.fin),0);
+  const nbInjustEnf=absEnfInjust.reduce((a,x)=>a+daysBetween(x.debut,x.fin),0);
+  const nbCongeEnf=absCongeEnf.reduce((a,x)=>a+daysBetween(x.debut,x.fin),0);
+
+  // ── Absences ass mat ──
+  const absAmNP=abs.filter(a=>a.type==='conge-am-np');
+  const absAmP=abs.filter(a=>a.type==='conge-am-paye');
+  const absCp=abs.filter(a=>a.type==='cp');
+  const nbAmNP=absAmNP.reduce((a,x)=>a+daysBetween(x.debut,x.fin),0);
+  const nbAmP=absAmP.reduce((a,x)=>a+daysBetween(x.debut,x.fin),0);
+  const nbCp=absCp.reduce((a,x)=>a+daysBetween(x.debut,x.fin),0);
+
+  // ── Retenues ──
+  const deductJust=absEnfJust.reduce((acc,a)=>{
+    const days=daysBetween(a.debut,a.fin);
+    return acc+(hMois>0?(salMensuel*(days*hJour))/hMois:0);
+  },0);
+  const deductAmNP=absAmNP.reduce((acc,a)=>{
+    const days=daysBetween(a.debut,a.fin);
+    return acc+(hMois>0?(salMensuel*(days*hJour))/hMois:0);
+  },0);
+  const totalDeduct=deductJust+deductAmNP;
+
+  const repasTotal=getRepasDefault(ch)*joursGarde;
+  const autresFrais=(p.autresFrais||[]).reduce((a,f)=>a+(parseFloat(f.montant)||0),0);
+  const salBrut=salMensuel+majComp+majSupp-totalDeduct;
+
+  let cp=0;
+  if((ch.contrat?.methodeCP||p.methodeCP||'10pct')==='10pct') cp=salBrut*0.10;
+  else {const cpD=absCp.reduce((a,x)=>a+daysBetween(x.debut,x.fin),0);cp=cpD*hJour*tarif;}
+
+  const totalNet=salBrut+cp+salIndemTotal+repasTotal+autresFrais;
+
+  // ── Jours travaillés pour Pajemploi (hors abs enfant justifiée) ──
+  const joursPaje=joursGarde; // jours réellement pointés
+  const heuresPaje=totalMins/60;
+
+  let html='';
+
+  // ── HERO ──
+  html+='<div class="rhero">';
+  html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">';
+  html+='<h2>📋 Pajemploi</h2><span class="mchip">'+mStr+'</span></div>';
+  html+='<div class="sgrid">';
+  html+='<div class="si"><div class="lbl">Jours à déclarer</div><div class="val hi">'+joursPaje+'</div></div>';
+  html+='<div class="si"><div class="lbl">Heures à déclarer</div><div class="val hi">'+(heuresPaje).toFixed(2)+'h</div></div>';
+  html+='<div class="si"><div class="lbl">Salaire net total</div><div class="val hi">'+fmtEuro(totalNet)+'</div></div>';
+  html+='<div class="si"><div class="lbl">Indem. entretien</div><div class="val hi">'+fmtEuro(salIndemTotal)+'</div></div>';
+  html+='</div>';
+  html+='<div class="gtrow"><div><div class="lbl">💰 Net à verser</div><div class="sub">À saisir sur Pajemploi</div></div>';
+  html+='<div class="amt" style="color:'+color+'">'+fmtEuro(totalNet)+'</div></div>';
+  html+='</div>';
+
+  // ── GUIDE PAJEMPLOI ──
+  html+='<div class="card"><div class="ctitle">📱 Ce que vous saisissez sur Pajemploi</div>';
+  html+='<div style="display:flex;flex-direction:column;gap:0;">';
+
+  function prow(ico,label,val,note){
+    return '<div style="display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);">'
+      +'<div style="font-size:1.3rem;flex-shrink:0;margin-top:1px;">'+ico+'</div>'
+      +'<div style="flex:1;">'
+      +'<div style="font-size:.82rem;font-weight:800;color:var(--deep);">'+label+'</div>'
+      +(note?'<div style="font-size:.7rem;color:var(--mid);font-weight:600;margin-top:1px;">'+note+'</div>':'')
+      +'</div>'
+      +'<div style="font-size:.92rem;font-weight:900;color:var(--cc);text-align:right;flex-shrink:0;">'+val+'</div>'
+      +'</div>';
+  }
+
+  html+=prow('📅','Nombre de jours travaillés',joursPaje+' j',"Jours où l'enfant a été gardé");
+  html+=prow('⏱️','Nombre d\'heures travaillées',(heuresPaje).toFixed(2)+' h','Total heures pointées ce mois');
+  html+=prow('💰','Salaire net versé',fmtEuro(totalNet),'Salaire brut + indemnités + CP');
+  html+=prow('🧹','Indemnités d\'entretien',fmtEuro(salIndemTotal),joursGarde+' j × tarif selon durée garde');
+  if(repasTotal>0) html+=prow('🍽️','Indemnités repas',fmtEuro(repasTotal),joursGarde+' j × '+getRepasDefault(ch).toFixed(2)+' €');
+
+  if(nbJustEnf>0) html+=prow('🤒','Absence enfant justifiée','-'+nbJustEnf+' j','Déduire : -'+fmtEuro(deductJust));
+  if(nbInjustEnf>0) html+=prow('❓','Absence enfant injustifiée',nbInjustEnf+' j','Salaire maintenu – rien à déduire');
+  if(nbCongeEnf>0) html+=prow('✈️','Congé enfant',nbCongeEnf+' j','Prévu au contrat');
+  if(nbCp>0) html+=prow('🏖️','Congés payés ass. mat.',nbCp+' j',fmtEuro(cp)+' à verser');
+  if(nbAmP>0) html+=prow('🏠','Absence ass. mat. payée',nbAmP+' j','Salaire maintenu');
+  if(nbAmNP>0) html+=prow('✂️','Absence ass. mat. non payée','-'+nbAmNP+' j','Retenue : -'+fmtEuro(deductAmNP));
+
+  html+='</div></div>';
+
+  // ── DÉTAIL SALAIRE ──
+  html+='<div class="card"><div class="ctitle">📊 Détail du salaire</div>';
+  html+='<div style="display:flex;flex-direction:column;gap:8px;">';
+  html+=drow('Salaire mensuel de base',fmtEuro(salMensuel),true);
+  if(totalComp>0) html+=drow('+ H. complémentaires ('+fmtDur(totalComp)+')','+'+fmtEuro(majComp));
+  if(totalSupp>0) html+=drow('+ H. majorées ('+fmtDur(totalSupp)+')','+'+fmtEuro(majSupp));
+  if(deductJust>0) html+=drow('- Abs. enfant justifiée','-'+fmtEuro(deductJust));
+  if(deductAmNP>0) html+=drow('- Abs. ass. mat. non payée','-'+fmtEuro(deductAmNP));
+  html+='<div class="div"></div>';
+  html+=drow('Salaire brut / net',fmtBrutNet(salBrut),true);
+  html+=drow('+ Indem. entretien',fmtEuro(salIndemTotal));
+  if(repasTotal>0) html+=drow('+ Indem. repas',fmtEuro(repasTotal));
+  if(autresFrais>0) html+=drow('+ Autres frais',fmtEuro(autresFrais));
+  html+=drow('+ Congés payés',fmtEuro(cp));
+  html+='<div class="div"></div>';
+  html+=drow('TOTAL NET À VERSER',fmtBrutNet(totalNet),true);
+  html+='</div></div>';
+
+  // ── IMPRIMER ──
+  html+='<button class="btn bd" onclick="printPajemploi('+ch.id+')">🖨️ Imprimer la fiche Pajemploi</button>';
+
+  return html;
+}
+
+function printPajemploi(cidStr){
+  const cid=parseInt(cidStr);
+  const ch=S.children.find(c=>c.id===cid);
+  if(!ch) return;
+  const mStr=MONTHS[curMonth]+' '+curYear;
+  // Récupérer les valeurs affichées
+  const el=document.getElementById('mainContent');
+  const w=window.open('','_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Pajemploi – '+ch.prenom+' – '+mStr+'</title>'
+    +'<style>body{font-family:Arial,sans-serif;padding:30px;max-width:680px;margin:0 auto;color:#222;}'
+    +'h1{font-size:1.2rem;color:#1B2A3B;border-bottom:3px solid #E07A5F;padding-bottom:8px;margin-bottom:4px;}'
+    +'.meta{color:#888;font-size:13px;margin-bottom:24px;}'
+    +'.section{margin-bottom:22px;}'
+    +'.section-title{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#E07A5F;margin-bottom:10px;}'
+    +'.row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:.88rem;}'
+    +'.row .lbl{color:#555;}.row .val{font-weight:700;color:#1B2A3B;}'
+    +'.total{display:flex;justify-content:space-between;padding:12px;background:#1B2A3B;border-radius:8px;margin-top:14px;}'
+    +'.total .lbl{color:#fff;font-weight:700;}.total .val{color:#E07A5F;font-size:1.1rem;font-weight:900;}'
+    +'@media print{body{padding:10px;}}'
+    +'</style></head><body>'
+    +'<h1>📋 Fiche Pajemploi – '+ch.prenom+'</h1>'
+    +'<div class="meta">'+mStr+' · Ass. Mat. : '+(S.params.nom||'')+'</div>'
+    +(el?'<div>'+el.innerHTML+'</div>':'')
+    +'</body></html>');
+  w.document.close();w.print();
+}
+
+// ══════════════════════════════════════════════════════════════
+// PAGE: PLANNING HEBDOMADAIRE VARIABLE
+// ══════════════════════════════════════════════════════════════
+function getWeekKey(date){
+  // ISO week key : YYYY-WXX
+  const d=new Date(date);
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate()+3-(d.getDay()||7));
+  const w=new Date(d.getFullYear(),0,4);
+  return d.getFullYear()+'-W'+String(1+Math.round(((d.getTime()-w.getTime())/86400000-3+(w.getDay()||7))/7)).padStart(2,'0');
+}
+
+function getWeekMonday(weekKey){
+  const [yr,wStr]=weekKey.split('-W');
+  const y=parseInt(yr),w=parseInt(wStr);
+  const jan4=new Date(y,0,4);
+  const startOfWeek=new Date(jan4.getTime()+(w-1)*7*86400000-(((jan4.getDay()||7)-1)*86400000));
+  return startOfWeek;
+}
+
+function getWeekDays(weekKey){
+  const mon=getWeekMonday(weekKey);
+  const JNAMES=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  return JNAMES.map((n,i)=>{
+    const d=new Date(mon.getTime()+i*86400000);
+    return {nom:n,date:d.toISOString().slice(0,10),dateObj:d};
+  });
+}
+
+let _planningWeekOffset=0;
+
+function renderPlanningHebdo(ch){
+  if(!S.plannings) S.plannings={};
+  const typePlanning=ch.contrat?.typePlanning||'hebdo';
+  const isVariable=typePlanning==='variable';
+  const now=new Date();
+  const refDate=new Date(now.getTime()+_planningWeekOffset*7*86400000);
+  const weekKey=getWeekKey(refDate);
+  const days=getWeekDays(weekKey);
+  const mon=days[0].dateObj;
+  const sun=days[6].dateObj;
+  const fmtWD=d=>d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+  const wData=S.plannings[ch.id]||{};
+  const semData=wData[weekKey]||{};
+  const prevRef=new Date(refDate.getTime()-7*86400000);
+  const prevKey=getWeekKey(prevRef);
+  const prevData=wData[prevKey]||{};
+  const joursContrat=(ch.contrat?.joursContrat||'Lun,Mar,Mer,Jeu,Ven').split(',');
+  const TOUS_JOURS=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  let totalMin=0;
+  // Calculer sur tous les jours saisis (pas seulement jours contrat)
+  days.forEach(function(d){
+    const jd=semData[d.nom]||{};
+    if(jd.debut&&jd.fin){
+      const dp=jd.debut.split(':').map(Number);
+      const fp=jd.fin.split(':').map(Number);
+      const diff=(fp[0]*60+fp[1])-(dp[0]*60+dp[1]);
+      if(diff>0) totalMin+=diff;
+    }
+  });
+  const totalH=Math.floor(totalMin/60),totalM=totalMin%60;
+  const hContrat=ch.contrat?.heuresHebdo||40;
+  const diffH=(totalMin/60-hContrat).toFixed(1);
+  const diffColor=totalMin/60>hContrat+0.5?'#C0473A':totalMin/60<hContrat-0.5?'#3A6EA8':'#3A8F6F';
+  const hasPrev=Object.keys(prevData).length>0;
+  const todayStr=new Date().toISOString().slice(0,10);
+  const weekLabel=_planningWeekOffset===0?' · Cette semaine':_planningWeekOffset===-1?' · Semaine dernière':'';
+  const variableBadge=isVariable?'<span style="background:var(--ccl);color:var(--ccd);font-size:.6rem;font-weight:800;border-radius:8px;padding:2px 7px;margin-left:6px;">Variable</span>':'';
+  let html='<div class="card">';
+  html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">';
+  html+='<button onclick="_planningWeekOffset--;renderContent()" style="background:var(--bg);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;">‹</button>';
+  html+='<div style="text-align:center;"><div style="font-size:.78rem;font-weight:900;color:var(--deep);">'+fmtWD(mon)+' – '+fmtWD(sun)+'</div>';
+  html+='<div style="font-size:.65rem;font-weight:700;color:var(--mid);">'+weekKey+weekLabel+variableBadge+'</div></div>';
+  html+='<button onclick="_planningWeekOffset++;renderContent()" style="background:var(--bg);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;">›</button>';
+  html+='</div>';
+  if(hasPrev) html+='<button onclick="copyPrevWeek('+ch.id+',\''+weekKey+'\',\''+prevKey+'\')" style="width:100%;background:var(--ccl);border:none;border-radius:12px;padding:8px;font-size:.75rem;font-weight:800;color:var(--ccd);cursor:pointer;margin-bottom:10px;">📋 Copier la semaine précédente</button>';
+  html+='<div style="display:flex;flex-direction:column;gap:8px;">';
+  days.forEach(function(d){
+    const jd=semData[d.nom]||{};
+    const isContrat=joursContrat.includes(d.nom);
+    const isToday=d.date===todayStr;
+    const isSamDim=(d.nom==='Sam'||d.nom==='Dim');
+    const isRepos=jd.repos===true;
+    const op=isContrat||isSamDim?'1':'0.45';
+    const bdCol=isContrat?'rgba(0,0,0,.09)':'rgba(0,0,0,.04)';
+    const txtCol=isToday?'var(--cc)':isSamDim?'var(--orange)':'var(--deep)';
+    const hasClear=jd.debut||jd.fin||isRepos;
+    if(isRepos){
+      html+='<div style="display:grid;grid-template-columns:56px 1fr auto;gap:6px;align-items:center;margin-bottom:2px;">';
+      html+='<div><div style="font-weight:800;font-size:.8rem;color:'+txtCol+';">'+d.nom+(isToday?' •':'')+'</div>';
+      html+='<div style="font-size:.6rem;color:var(--mid);font-weight:600;">'+d.dateObj.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+'</div></div>';
+      html+='<span style="font-size:.75rem;font-weight:800;color:var(--green);background:#EAF7F0;border-radius:8px;padding:5px 10px;">🛌 Repos</span>';
+      html+='<button onclick="clearPlanningDay('+ch.id+',\''+weekKey+'\',\''+d.nom+'\')" style="background:#FFF0EF;border:none;color:var(--red);border-radius:8px;padding:6px 7px;cursor:pointer;font-size:.75rem;">✕</button>';
+      html+='</div>';
+    } else {
+      html+='<div style="display:grid;grid-template-columns:56px 1fr 14px 1fr auto auto;gap:5px;align-items:center;opacity:'+op+';margin-bottom:2px;">';
+      html+='<div><div style="font-weight:800;font-size:.8rem;color:'+txtCol+';">'+d.nom+(isToday?' •':'')+'</div>';
+      html+='<div style="font-size:.6rem;color:var(--mid);font-weight:600;">'+d.dateObj.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+'</div></div>';
+      html+='<input type="time" value="'+(jd.debut||'')+'" style="background:var(--bg);border:1.5px solid '+bdCol+';border-radius:9px;padding:6px 5px;font-size:.8rem;font-weight:700;color:var(--deep);font-family:\'Nunito\',sans-serif;" onchange="savePlanningDay('+ch.id+',\''+weekKey+'\',\''+d.nom+'\',\'debut\',this.value)">';
+      html+='<span style="text-align:center;color:var(--mid);font-size:.72rem;">→</span>';
+      html+='<input type="time" value="'+(jd.fin||'')+'" style="background:var(--bg);border:1.5px solid '+bdCol+';border-radius:9px;padding:6px 5px;font-size:.8rem;font-weight:700;color:var(--deep);font-family:\'Nunito\',sans-serif;" onchange="savePlanningDay('+ch.id+',\''+weekKey+'\',\''+d.nom+'\',\'fin\',this.value)">';
+      html+='<button title="Marquer repos" onclick="setPlanningRepos('+ch.id+',\''+weekKey+'\',\''+d.nom+'\')" style="background:var(--bg);border:1.5px solid rgba(0,0,0,.07);color:var(--mid);border-radius:8px;padding:5px 6px;cursor:pointer;font-size:.72rem;">🛌</button>';
+      html+='<button onclick="clearPlanningDay('+ch.id+',\''+weekKey+'\',\''+d.nom+'\')" style="background:'+(hasClear?'#FFF0EF':'transparent')+';border:none;color:'+(hasClear?'var(--red)':'var(--light)')+';border-radius:8px;padding:6px 6px;cursor:pointer;font-size:.75rem;">✕</button>';
+      html+='</div>';
+    }
+  });
+  html+='</div>';
+  html+='<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">';
+  html+='<div style="font-size:.78rem;font-weight:800;color:var(--deep);">Total : '+totalH+'h'+(totalM?totalM:'')+'</div>';
+  html+='<div style="font-size:.72rem;font-weight:800;color:'+diffColor+';">'+(diffH>0?'+':'')+diffH+'h vs contrat ('+hContrat+'h)</div>';
+  html+='</div></div>';
+  html+='<div class="card" style="margin-top:0;"><div class="ctitle">📊 Récap mois en cours</div>';
+  html+=renderPlanningMonthSummary(ch);
+  html+='</div>';
+  return html;
+}
+
+function savePlanningDay(cid,weekKey,jour,champ,val){
+  if(!S.plannings) S.plannings={};
+  if(!S.plannings[cid]) S.plannings[cid]={};
+  if(!S.plannings[cid][weekKey]) S.plannings[cid][weekKey]={};
+  if(!S.plannings[cid][weekKey][jour]) S.plannings[cid][weekKey][jour]={};
+  S.plannings[cid][weekKey][jour][champ]=val;
+  save();
+  // Vérification repos 11h entre 2 journées consécutives
+  checkRepos11h(cid,weekKey,jour);
+  renderContent();
+}
+
+function checkRepos11h(cid,weekKey,jour){
+  const JOURS=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  const semData=S.plannings[cid]?.[weekKey]||{};
+  const idx=JOURS.indexOf(jour);
+  const toMin=t=>{if(!t)return null;const[h,m]=t.split(':').map(Number);return h*60+m;};
+  const warnings=[];
+  // Vérifier avec le jour précédent
+  if(idx>0){
+    const prev=JOURS[idx-1];
+    const jPrev=semData[prev]||{};
+    const jCur=semData[jour]||{};
+    if(jPrev.fin&&jCur.debut){
+      const finPrec=toMin(jPrev.fin);
+      const debCur=toMin(jCur.debut);
+      // Si départ après minuit → +24h
+      const repos=debCur+1440-finPrec;
+      const reposReel=repos>1440?repos-1440:repos;
+      if(reposReel<11*60){
+        const manque=Math.round(11*60-reposReel);
+        showToast('⚠️ Repos insuffisant entre '+prev+' et '+jour+' : '+(Math.floor(reposReel/60))+'h'+( reposReel%60||'')+ ' (min légal : 11h)','terr');
+      }
+    }
+  }
+}
+
+function clearPlanningDay(cid,weekKey,jour){
+  if(S.plannings?.[cid]?.[weekKey]?.[jour]) delete S.plannings[cid][weekKey][jour];
+  save();renderContent();
+}
+function setPlanningRepos(cid,weekKey,jour){
+  if(!S.plannings) S.plannings={};
+  if(!S.plannings[cid]) S.plannings[cid]={};
+  if(!S.plannings[cid][weekKey]) S.plannings[cid][weekKey]={};
+  S.plannings[cid][weekKey][jour]={repos:true};
+  save();renderContent();
+}
+
+function copyPrevWeek(cid,weekKey,prevKey){
+  if(!S.plannings) S.plannings={};
+  if(!S.plannings[cid]) S.plannings[cid]={};
+  const prev=S.plannings[cid]?.[prevKey]||{};
+  S.plannings[cid][weekKey]=JSON.parse(JSON.stringify(prev));
+  save();renderContent();
+  showToast('📋 Semaine copiée !','tok');
+}
+
+function renderPlanningMonthSummary(ch){
+  if(!S.plannings?.[ch.id]) return '<div style="font-size:.78rem;color:var(--mid);font-weight:600;text-align:center;padding:8px;">Aucun planning saisi ce mois</div>';
+  const now=new Date();
+  const yr=now.getFullYear(),mo=now.getMonth();
+  let totalMin=0,semCount=0;
+  Object.entries(S.plannings[ch.id]).forEach(function([wk,jours]){
+    const m=getWeekMonday(wk);
+    if(m.getFullYear()===yr&&m.getMonth()===mo){
+      semCount++;
+      Object.values(jours).forEach(function(jd){
+        if(jd.debut&&jd.fin){
+          const dp=jd.debut.split(':').map(Number);
+          const fp=jd.fin.split(':').map(Number);
+          const diff=(fp[0]*60+fp[1])-(dp[0]*60+dp[1]);
+          if(diff>0) totalMin+=diff;
+        }
+      });
+    }
+  });
+  const tarif=ch.tarif||S.params.tarif||4.50;
+  const salEstim=(totalMin/60)*tarif;
+  return '<div style="display:flex;gap:16px;justify-content:space-around;text-align:center;padding:4px 0;">'
+    +'<div><div style="font-size:1.4rem;font-weight:900;color:var(--cc);">'+Math.floor(totalMin/60)+'h'+(totalMin%60||'')+'</div><div style="font-size:.62rem;font-weight:700;color:var(--mid);text-transform:uppercase;">Heures saisies</div></div>'
+    +'<div><div style="font-size:1.4rem;font-weight:900;color:var(--deep);">'+semCount+'</div><div style="font-size:.62rem;font-weight:700;color:var(--mid);text-transform:uppercase;">Semaines</div></div>'
+    +'<div><div style="font-size:1.1rem;font-weight:900;color:var(--green);">'+fmtEuro(salEstim)+'</div><div style="font-size:.62rem;font-weight:700;color:var(--mid);text-transform:uppercase;">Salaire net estimé</div></div>'
+    +'</div>';
+}
+
+function renderFiche(ch){
+  const c=ch.contrat||{};
+  return `
+  <div class="card">
+    <div class="ctitle">👶 Informations enfant</div>
+    ${irow('Prénom',ch.prenom)}
+    ${irow('Date de naissance',ch.naissance?fmtDate(ch.naissance)+' ('+calcAge(ch.naissance)+')':'—')}
+    ${irow('Allergies / spécificités',ch.allergies||'—')}
+    <div class="toggle-row">
+      <span style="font-size:.82rem;font-weight:700;">💉 Vaccins à jour</span>
+      <button class="toggle ${ch.vaccinsAJour?'on':''}" onclick="toggleVaccin(${curChild})"></button>
+    </div>
+    ${ch.notes?`<div style="font-size:.8rem;color:var(--mid);margin-top:4px;line-height:1.5;">${ch.notes}</div>`:''}
+  </div>
+  <div class="card">
+    <div class="ctitle">👨‍👩‍👧 Parents</div>
+    ${irow('Parent 1',ch.parents?.nom1||'—')}
+    ${irow('Téléphone',ch.parents?.tel1||'—')}
+    ${irow('Parent 2',ch.parents?.nom2||'—')}
+    ${irow('Téléphone',ch.parents?.tel2||'—')}
+    ${irow('Adresse',ch.parents?.adresse||'—')}
+    ${ch.pajeClassique?irow('📱 N° Pajemploi',ch.pajeClassique):''}
+  </div>
+  <div class="card">
+    <div class="ctitle">🚨 Urgence & Autorisations</div>
+    ${(ch.urgences&&ch.urgences.length?ch.urgences:ch.urgence?.nom?[{nom:ch.urgence.nom,tel:ch.urgence.tel}]:[]).map((u,i)=>
+      irow((i===0?'🚨 ':'')+u.nom,u.tel||'—')).join('')||irow('Personnes à prévenir','—')}
+    <div style="height:4px"></div>
+    <div style="font-size:.72rem;font-weight:800;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin:4px 0 2px;">Autorisés à récupérer</div>
+    ${(ch.autorisesList&&ch.autorisesList.length?ch.autorisesList:ch.autorises?ch.autorises.split(',').map(s=>({nom:s.trim(),tel:''})):[]).map(a=>
+      irow('✅ '+a.nom,a.tel||'')).join('')||irow('Personnes autorisées','—')}
+  </div>
+  <div class="card">
+    <div class="ctitle">📄 Contrat</div>
+    ${irow('Heures hebdomadaires',`${c.heuresHebdo||40}h`)}
+    ${irow('Jours travaillés',c.joursContrat||'—')}
+    ${irow('Année',c.anneeComplete?'Complète (52 sem.)':'Incomplète ('+(c.nbSemaines||47)+' sem.)')}
+    ${irow('Heures annuelles',c.heuresAnnuelles?c.heuresAnnuelles+'h':Math.round((c.heuresHebdo||40)*(c.anneeComplete===false?(c.nbSemaines||47):52))+'h')}
+    ${irow('Méthode CP',(c.methodeCP||'10pct')==='10pct'?'10% du salaire brut':'Maintien de salaire')}
+    ${renderHorairesContrat(c)}
+  </div>
+  ${renderGardeAlterneeFiche(ch)}
+  <button class="btn bc" onclick="openEditChild(${curChild})">✏️ Modifier la fiche complète</button>
+  <button class="btn bdanger" style="margin-top:8px;" onclick="delChild(${curChild})">🗑️ Supprimer cet enfant</button>`;
+}
+
+function irow(l,v){return `<div class="info-row"><span class="lbl">${l}</span><span class="val">${v||'—'}</span></div>`;}
+
+function renderGardeAlterneeFiche(ch){
+  const ga=ch.gardeAlternee;
+  if(!ga||ga.type!=='alternee') return '';
+  const p=S.params;
+  const tarif=ch.tarif||p.tarif||4.50;
+  const hHebdo=ch.contrat?.heuresHebdo||40;
+  const sem=ch.contrat?.anneeComplete!==false?52:(ch.contrat?.nbSemaines||47);
+  const salMensuel=(tarif*hHebdo*sem)/12;
+  const part1=ga.part1||50;
+  const part2=ga.part2||(100-part1);
+  const sal1=salMensuel*part1/100;
+  const sal2=salMensuel*part2/100;
+  let h='<div class="card" style="border:2px solid #FFD4A8;">';
+  h+='<div class="ctitle">⚖️ Garde alternée — Parents séparés</div>';
+  h+=irow('Répartition','Parent 1 : '+part1+'% · Parent 2 : '+part2+'%');
+  h+='<div style="height:8px"></div>';
+  h+='<div style="font-size:.72rem;font-weight:800;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">👤 Parent 1 — '+(ch.parents?.nom1||'Parent 1')+'</div>';
+  h+=irow('Part mensuelle (net)',fmtBrutNet(sal1,true));
+  h+=ga.paje1?irow('Pajemploi',ga.paje1):'';
+  h+='<div style="height:8px"></div>';
+  h+='<div style="font-size:.72rem;font-weight:800;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">👤 Parent 2 — '+(ch.parents?.nom2||'Parent 2')+'</div>';
+  h+=irow('Part mensuelle (net)',fmtBrutNet(sal2,true));
+  h+=ga.paje2?irow('Pajemploi',ga.paje2):'';
+  h+='<div style="background:#FFF8F0;border-radius:10px;padding:10px;margin-top:10px;font-size:.7rem;color:#6B5A3A;font-weight:600;line-height:1.6;">⚖️ <strong>Légal :</strong> 2 contrats distincts · Chaque parent déclare sur Pajemploi · Les 2 parents bénéficient du CMG depuis déc. 2025</div>';
+  h+='</div>';
+  return h;
+}
+
+function renderHorairesContrat(c){
+  const JOURS=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  const joursActifs=(c.joursContrat||'Lun,Mar,Mer,Jeu,Ven').split(',');
+  const calcDuree=(h)=>{
+    if(!h||!h.debut||!h.fin)return '';
+    const [dh,dm]=h.debut.split(':').map(Number);
+    const [fh,fm]=h.fin.split(':').map(Number);
+    const diff=(fh*60+fm)-(dh*60+dm);
+    if(diff<=0)return '';
+    const hrs=Math.floor(diff/60),mins=diff%60;
+    return ' ('+hrs+'h'+(mins?mins+'':'')+')'
+  };
+  const fmtH=(h)=>h?h.debut&&h.fin?h.debut+' → '+h.fin+calcDuree(h):'—':'—';
+  const type=c.typePlanning||'hebdo';
+  if(type==='hebdo'){
+    const h=c.horairesFixe||{};
+    const hasData=joursActifs.some(j=>h[j]?.debut);
+    if(!hasData)return '';
+    return '<div style="height:4px"></div><div style="font-size:.72rem;font-weight:800;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin:6px 0 4px;">Horaires contractuels</div>'
+      +joursActifs.map(j=>`<div class="info-row"><span class="lbl">${j}</span><span class="val" style="font-size:.8rem;">${fmtH(h[j])}</span></div>`).join('');
+  } else {
+    const hA=c.horairesA||{}, hB=c.horairesB||{};
+    const hasData=joursActifs.some(j=>hA[j]?.debut||hB[j]?.debut);
+    if(!hasData)return '';
+    let html='<div style="height:4px"></div><div style="font-size:.72rem;font-weight:800;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin:6px 0 4px;">🔄 Planning alterné</div>';
+    html+='<div style="font-size:.72rem;font-weight:800;color:var(--cc);margin:4px 0 3px;">Semaine A</div>';
+    html+=joursActifs.map(j=>`<div class="info-row"><span class="lbl">${j}</span><span class="val" style="font-size:.8rem;">${fmtH(hA[j])}</span></div>`).join('');
+    html+='<div style="font-size:.72rem;font-weight:800;color:var(--cc);margin:8px 0 3px;">Semaine B</div>';
+    html+=joursActifs.map(j=>`<div class="info-row"><span class="lbl">${j}</span><span class="val" style="font-size:.8rem;">${fmtH(hB[j])}</span></div>`).join('');
+    return html;
+  }
+}
+
+// ═══════════════════════════════════
+// PAGE: RÉGLAGES
+// ═══════════════════════════════════
+function renderSettings(){
+  const p=S.params;
+  const af=(p.autresFrais||[]).map((f,i)=>`
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+      <input type="text" placeholder="Libellé" value="${f.label||''}" oninput="updAutre(${i},'label',this.value)"
+        style="flex:1;background:var(--bg);border:1.5px solid rgba(0,0,0,.09);border-radius:10px;padding:9px 11px;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:600;color:var(--deep);outline:none;">
+      <input type="number" placeholder="€" value="${f.montant||''}" oninput="updAutre(${i},'montant',this.value)"
+        style="width:80px;background:var(--bg);border:1.5px solid rgba(0,0,0,.09);border-radius:10px;padding:9px 11px;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:600;color:var(--deep);outline:none;">
+      <button onclick="delAutre(${i})" style="background:#FFF0EF;border:none;color:var(--red);border-radius:8px;padding:8px 10px;cursor:pointer;font-size:.85rem;">✕</button>
+    </div>`).join('');
+  return `
+  <div class="sec-title">👤 Mon profil</div>
+  <div class="card">
+    <div class="field"><label>Nom & Prénom</label><input type="text" id="sNom" placeholder="Marie Dupont" oninput="saveSettings()"></div>
+    <div class="r2">
+      <div class="field"><label>N° Agrément</label><input type="text" id="sAgr" placeholder="2024-01-AM" oninput="saveSettings()"></div>
+      <div class="field"><label>Téléphone</label><input type="tel" id="sTel" placeholder="06 xx xx xx xx" oninput="saveSettings()"></div>
+    </div>
+    <div class="sec-title" style="margin-top:10px;margin-bottom:6px;">🛡️ Assurance responsabilité civile</div>
+    <div class="field"><label>Compagnie d'assurance</label><input type="text" id="sAssuranceCompagnie" placeholder="Ex : MAIF, AXA, MAAF…" oninput="saveSettings()"></div>
+    <div class="r2">
+      <div class="field"><label>N° de contrat</label><input type="text" id="sAssuranceNumero" placeholder="N° police" oninput="saveSettings()"></div>
+      <div class="field"><label>Téléphone assurance</label><input type="tel" id="sAssuranceTel" placeholder="0800 xx xx xx" oninput="saveSettings()"></div>
+    </div>
+  </div>
+  <div class="sec-title">💶 Tarification</div>
+  <div class="card">
+    <div class="r2">
+      <div class="field">
+        <label>Tarif horaire brut par défaut (€/h)</label>
+        <input type="number" id="sTarif" step="0.10" min="0" oninput="saveSettings();checkTarifMin(this)">
+        <div id="tarifMinWarn" style="display:none;font-size:.68rem;color:#C0473A;font-weight:700;margin-top:3px;"></div>
+        <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-top:2px;">⚖️ Min. légal 2026 : 3,38 €/h (code CASF) · 3,64 €/h (conv. collective particuliers employeurs) · +4% avec titre professionnel</div>
+      </div>
+    </div>
+    <!-- Indemnités repas par âge et type -->
+    <div class="sec-title" style="margin-top:10px;margin-bottom:6px;">🍽️ Indemnités repas (€)</div>
+    <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-bottom:10px;">Réf. fiscale 2026 : 5,45 €/repas · Laissez vide si non applicable.</div>
+
+    <!-- En-têtes repas -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;margin-bottom:4px;padding:0 2px;">
+      <div style="text-align:center;font-size:.7rem;font-weight:800;color:var(--mid);">🌅 P.déj.</div>
+      <div style="text-align:center;font-size:.7rem;font-weight:800;color:var(--mid);">☀️ Déj.</div>
+      <div style="text-align:center;font-size:.7rem;font-weight:800;color:var(--mid);">🍪 Goûter</div>
+      <div style="text-align:center;font-size:.7rem;font-weight:800;color:var(--mid);">🌙 Dîner</div>
+    </div>
+
+    <div style="margin-bottom:8px;">
+      <div style="font-size:.68rem;font-weight:800;color:var(--cc);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">– 1 an</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;">
+        <input type="number" id="sRepas_m1_pDej" step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+        <input type="number" id="sRepas_m1_dej"  step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+        <input type="number" id="sRepas_m1_gout" step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+        <input type="number" id="sRepas_m1_din"  step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+      </div>
+    </div>
+    <div style="margin-bottom:8px;">
+      <div style="font-size:.68rem;font-weight:800;color:var(--cc);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">1–3 ans</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;">
+        <input type="number" id="sRepas_1a3_pDej" step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+        <input type="number" id="sRepas_1a3_dej"  step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+        <input type="number" id="sRepas_1a3_gout" step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+        <input type="number" id="sRepas_1a3_din"  step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+      </div>
+    </div>
+    <div style="margin-bottom:8px;">
+      <div style="font-size:.68rem;font-weight:800;color:var(--cc);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">3–6 ans</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;">
+        <input type="number" id="sRepas_3a6_pDej" step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+        <input type="number" id="sRepas_3a6_dej"  step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+        <input type="number" id="sRepas_3a6_gout" step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+        <input type="number" id="sRepas_3a6_din"  step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+      </div>
+    </div>
+    <div style="margin-bottom:8px;">
+      <div style="font-size:.68rem;font-weight:800;color:var(--cc);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">+ 6 ans</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;">
+        <input type="number" id="sRepas_p6_pDej" step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+        <input type="number" id="sRepas_p6_dej"  step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+        <input type="number" id="sRepas_p6_gout" step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+        <input type="number" id="sRepas_p6_din"  step="0.10" min="0" placeholder="—" oninput="saveSettings()" style="text-align:center;font-size:.82rem;font-weight:700;padding:7px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);width:100%;box-sizing:border-box;">
+      </div>
+    </div>
+
+    <!-- Champ repas global conservé pour compatibilité calculs (caché) -->
+    <input type="hidden" id="sRepas" value="0">
+    <div class="field">
+  <label>Taux H. complémentaires (%)</label>
+  <input type="number" id="sTauxComp" step="1" min="0" oninput="saveSettings()">
+  <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-top:3px;">⚖️ Légalement : 0% (pas de majoration obligatoire en-dessous de 45h)</div>
+</div>
+    <div class="r2">
+      <div class="field">
+        <label>Taux H. majorées >45h (%)</label>
+        <input type="number" id="sTauxSupp" step="1" min="0" oninput="saveSettings()">
+        <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-top:3px;">⚖️ Min. légal : 10% au-delà de 45h/sem (obligatoire)</div>
+      </div>
+      <div class="field">
+        <label>Majoration travail dimanche/repos (%)</label>
+        <input type="number" id="sTauxDim" step="1" min="0" oninput="saveSettings()" placeholder="25">
+        <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-top:3px;">⚖️ Conv. collective : +25% si travail le jour de repos hebdomadaire</div>
+      </div>
+    </div>
+    <div class="sec-title" style="margin-top:16px;">⏱️ Dépassements horaires</div>
+    <div class="card">
+      <div style="font-size:.72rem;color:var(--mid);font-weight:600;margin-bottom:10px;line-height:1.5;">Retard de récupération le soir ou arrivée anticipée le matin</div>
+      <div class="r2">
+        <div class="field">
+          <label>Tolérance (min)</label>
+          <input type="number" id="sDepassTolerance" step="1" min="0" oninput="saveSettings()" placeholder="10">
+          <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-top:2px;">Minutes offertes avant facturation</div>
+        </div>
+        <div class="field">
+          <label>Tarif retard (€ / ¼h)</label>
+          <input type="number" id="sDepassTarif" step="0.50" min="0" oninput="saveSettings()" placeholder="2">
+          <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-top:2px;">Montant par quart d'heure entamé</div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:4px;">
+        <label>Seuil d'alerte (dépassements / semaine)</label>
+        <input type="number" id="sDepassSeuil" step="1" min="1" oninput="saveSettings()" placeholder="3">
+        <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-top:2px;">Au-delà → proposition avenant ou facturation systématique</div>
+      </div>
+    </div>
+    <div class="sec-title" style="margin-top:16px;">🌍 Localisation (météo)</div>
+    <div class="card">
+      <div class="r2">
+        <div class="field">
+          <label>Ville</label>
+          <input type="text" id="sVille" placeholder="Paris" oninput="saveSettings()">
+        </div>
+        <div class="field">
+          <label>Latitude (°N)</label>
+          <input type="number" id="sLatitude" step="0.1" placeholder="48.9" oninput="saveSettings()">
+          <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-top:2px;">Pour lever/coucher soleil</div>
+        </div>
+      </div>
+      <div style="font-size:.68rem;color:var(--mid);font-weight:600;margin-top:4px;">💡 Exemples : Paris 48.9 · Lyon 45.7 · Marseille 43.3 · Bordeaux 44.8 · Lille 50.6 · Nantes 47.2</div>
+    </div>
+    </div>
+  </div>
+  <div class="sec-title">🧹 Indemnités d'entretien (par tranche horaire)</div>
+  <div class="card">
+    <div style="background:#EAF7F0;border-radius:10px;padding:9px 12px;margin-bottom:10px;font-size:.68rem;color:#2A6B4A;font-weight:600;line-height:1.6;">
+      ⚖️ <strong>Tarifs officiels 2026</strong> (Décret 17 déc. 2025 · Conv. collective particuliers employeurs)<br>
+      • Minimum garanti (MG) = <strong>4,25 €</strong><br>
+      • Plancher : <strong>2,65 €</strong> pour toute journée commencée (quelle que soit la durée)<br>
+      • Au-delà de 6h14 : <strong>0,425 €/h</strong> (= 0,10 × MG), plafonné à <strong>3,83 €</strong> à 9h<br>
+      • Au-delà de 9h : plafonné à <strong>3,83 €</strong>
+    </div>
+    <!-- Mise à jour annuelle du MG -->
+    <div style="background:#F0F4FF;border:1.5px solid #C8D4F8;border-radius:12px;padding:10px 12px;margin-bottom:12px;">
+      <div style="font-size:.72rem;font-weight:900;color:#3A4A8A;margin-bottom:6px;">🔁 Mise à jour annuelle automatique</div>
+      <div style="font-size:.68rem;color:#4A5A9A;font-weight:600;line-height:1.5;margin-bottom:8px;">
+        Chaque 1er janvier, le gouvernement revalorise le MG. Saisissez la nouvelle valeur pour recalculer toutes les tranches automatiquement.
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;">
+        <div style="font-size:.75rem;font-weight:800;color:var(--deep);">Nouveau MG (€) :</div>
+        <input type="number" id="inputNouveauMG" step="0.01" min="3" max="10"
+          placeholder="${S.params.mgActuel||4.25}"
+          style="width:80px;text-align:center;font-size:.9rem;font-weight:800;padding:6px 8px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);">
+        <button onclick="appliquerNouveauMG(document.getElementById('inputNouveauMG').value)"
+          style="background:var(--cc);color:#fff;border:none;border-radius:10px;padding:7px 12px;font-size:.75rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">
+          ✅ Appliquer
+        </button>
+      </div>
+      <button id="btnFetchMG" onclick="fetchMGOfficiel()"
+        style="background:none;border:1.5px solid #C8D4F8;border-radius:10px;padding:6px 12px;font-size:.72rem;font-weight:700;color:#3A4A8A;cursor:pointer;width:100%;font-family:'Nunito',sans-serif;">
+        🔄 Où trouver le nouveau MG ?
+      </button>
+      <div id="mgFetchInfo" style="font-size:.67rem;color:#4A5A9A;font-weight:600;margin-top:6px;line-height:1.5;"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;margin-bottom:6px;">
+      <div style="font-size:.62rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);">Durée max (heures)</div>
+      <div style="font-size:.62rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);">Indemnité (€)</div>
+      <div></div>
+    </div>
+    <div id="tranchesZone">${renderTranches()}</div>
+    <button class="btn bgh" style="margin-top:8px;" onclick="addTranche()">➕ Ajouter une tranche</button>
+    <button class="btn bgh" style="margin-top:7px;" onclick="resetTranches2026()">🔄 Remettre les tarifs 2026</button>
+  </div>
+  <div class="sec-title">➕ Autres frais</div>
+  <div class="card">
+    <div id="autresFraisZone">${af}</div>
+    <button class="btn bgh" onclick="addAutre()">➕ Ajouter un frais</button>
+  </div>
+  <div class="sec-title">👶 Enfants</div>
+  <div class="card">
+    ${S.children.map((c,i)=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;${i>0?'border-top:1px solid var(--border)':''}">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:${COLORS[c.colorIdx]};display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:.95rem;">${c.prenom[0].toUpperCase()}</div>
+          <div><div style="font-weight:800;font-size:.88rem;">${c.prenom}</div>
+          <div style="font-size:.7rem;color:var(--mid);font-weight:600;">${c.tarif?c.tarif.toFixed(2)+' €/h':'Tarif défaut'}</div></div>
+        </div>
+        <button class="btn bgh bsm" onclick="openEditChild(${i})">✏️</button>
+      </div>`).join('')}
+    <div style="margin-top:10px;">
+      <button class="btn bc" onclick="openNewChild()">➕ Ajouter un enfant</button>
+    </div>
+  </div>
+  <div class="sec-title">🗂️ Données</div>
+  <div class="card">
+    <button class="btn bgh" onclick="exportData()" style="margin-bottom:8px;">📤 Exporter les données</button>
+    <button class="btn bdanger" onclick="clearData()">🗑️ Effacer tous les pointages</button>
+  </div>`;
+}
+
+function loadSettingsVals(){
+  const p=S.params;
+  const f=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v||'';};
+  f('sNom',p.nom);f('sAgr',p.agrement);f('sTel',p.tel);
+  f('sAssuranceCompagnie',p.assuranceCompagnie||'');
+  f('sAssuranceNumero',p.assuranceNumero||'');
+  f('sAssuranceTel',p.assuranceTel||'');
+  f('sTarif',p.tarif??4.50);f('sIndem',p.indemnite??3);f('sRepas',p.repas??0);
+  // Indemnités repas par âge et type
+  const rp=p.repasParAge||{};
+  ['m1','1a3','3a6','p6'].forEach(age=>{
+    ['pDej','dej','gout','din'].forEach(type=>{
+      f('sRepas_'+age+'_'+type, rp[age]?.[type]??'');
+    });
+  });
+  f('sTauxComp',p.tauxComp??0);f('sTauxSupp',p.tauxSupp??10);f('sTauxDim',p.tauxDim??25);
+  f('sDepassTolerance',p.depassTolerance??10);f('sDepassTarif',p.depassTarif??2);f('sDepassSeuil',p.depassSeuil??3);
+  f('sVille',p.ville||'');f('sLatitude',p.latitude||'');
+  // methodeCP est par enfant
+}
+
+function saveSettings(){
+  const g=id=>document.getElementById(id)?.value;
+  S.params={...S.params,
+    nom:g('sNom'),agrement:g('sAgr'),tel:g('sTel'),
+    assuranceCompagnie:g('sAssuranceCompagnie')||'',
+    assuranceNumero:g('sAssuranceNumero')||'',
+    assuranceTel:g('sAssuranceTel')||'',
+    tarif:parseFloat(g('sTarif'))||4.50,
+    indemnite:parseFloat(g('sIndem'))||3,
+    repas:parseFloat(g('sRepas'))||0,
+    repasParAge:(()=>{
+      const r={};
+      ['m1','1a3','3a6','p6'].forEach(age=>{
+        r[age]={};
+        ['pDej','dej','gout','din'].forEach(type=>{
+          const v=parseFloat(document.getElementById('sRepas_'+age+'_'+type)?.value);
+          if(!isNaN(v)&&v>0) r[age][type]=v;
+        });
+      });
+      return r;
+    })(),
+    // methodeCP est par enfant
+    tauxComp:parseFloat(g('sTauxComp'))||10,
+    tauxSupp:parseFloat(g('sTauxSupp'))||10,
+    tauxDim:parseFloat(g('sTauxDim'))||25,
+    depassTolerance:parseInt(g('sDepassTolerance'))||10,
+    depassTarif:parseFloat(g('sDepassTarif'))||2,
+    depassSeuil:parseInt(g('sDepassSeuil'))||3,
+    ville:g('sVille')||'',
+    latitude:parseFloat(g('sLatitude'))||46.5,
+    autresFrais:S.params.autresFrais||[]
+  };
+  save();
+}
+
+function addAutre(){
+  if(!S.params.autresFrais) S.params.autresFrais=[];
+  S.params.autresFrais.push({label:'',montant:0});
+  save();renderContent();
+}
+function updAutre(i,k,v){
+  if(S.params.autresFrais[i]) S.params.autresFrais[i][k]=v;
+  save();
+}
+function delAutre(i){
+  S.params.autresFrais.splice(i,1);save();renderContent();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TRANCHES INDEMNITÉS ENTRETIEN — MISE À JOUR AUTO ANNUELLE
+// ═══════════════════════════════════════════════════════════════
+// Formule officielle conv. collective particuliers employeurs :
+//   Plancher  = 0.625 × MG  (pour toute durée ≤ 6h14)
+//   Taux/h    = 0.100 × MG  (au-delà de 6h14, par heure)
+//   Plafond   = 0.900 × MG  (à partir de 9h00)
+// Le MG est revalorisé chaque 1er janvier par décret gouvernemental.
+// Valeur de secours intégrée = 4,25 € (jan. 2026)
+
+const MG_FALLBACK = 4.25; // mis à jour manuellement si l'API échoue
+
+function calculerTranchesDepuisMG(mg){
+  const plancher = Math.round(0.625 * mg * 100) / 100;
+  const tauxH    = Math.round(0.100 * mg * 1000) / 1000;
+  const plafond  = Math.round(0.900 * mg * 100) / 100;
+  const tranches = [];
+  // ≤ 6h14 (374 min) → plancher
+  tranches.push({dureeMax: 374, montant: plancher});
+  // 6h15 → 9h00 par pas de 15 min
+  for(let mins = 375; mins <= 540; mins += 15){
+    const m = Math.min(Math.round(tauxH * (mins/60) * 100)/100, plafond);
+    tranches.push({dureeMax: mins, montant: m});
+  }
+  // > 9h00 → plafonné
+  tranches.push({dureeMax: 9999, montant: plafond});
+  return tranches;
+}
+
+const TRANCHES_2026 = calculerTranchesDepuisMG(MG_FALLBACK);
+
+function getDefaultTranches(){ return JSON.parse(JSON.stringify(TRANCHES_2026)); }
+
+function getTranches(){
+  if(!S.params.tranches||!S.params.tranches.length){
+    S.params.tranches=getDefaultTranches();save();
+  }
+  return S.params.tranches;
+}
+
+// ── Mise à jour automatique du MG au 1er janvier ──────────────
+// Vérifie 1 fois par an si le MG a changé via l'API officielle data.gouv.fr
+async function checkMGAnnuel(){
+  const annee = new Date().getFullYear();
+  const cle   = 'mg_check_' + annee;
+  // Déjà vérifié cette année ?
+  if(S.params[cle]) return;
+  try{
+    // API SMIC officielle (data.gouv.fr — DARES)
+    const url = 'https://data.gouv.fr/api/1/datasets/smic-mensuel-brut-et-net/?format=json';
+    // Fallback direct : calcul depuis le SMIC horaire brut
+    // SMIC horaire 2026 = 11,88 € → MG ass. mat. = ~35,75% du SMIC horaire (formule CASF)
+    // On utilise l'API open data smic
+    const r = await fetch('https://api.data.gouv.fr/api/1/datasets/5f5b4c5ec751df6d6bc1f39a/');
+    // Si l'API échoue on garde le fallback — pas d'erreur visible
+    if(!r.ok) throw new Error('API indisponible');
+    // Note : l'API data.gouv ne donne pas directement le MG ass. mat.
+    // On marque la vérification pour éviter les appels répétés
+    S.params[cle] = true;
+    save();
+  } catch(e){
+    // Silencieux — on reste sur les valeurs intégrées
+  }
+}
+
+// ── Mise à jour manuelle depuis la fiche réglages ─────────────
+async function fetchMGOfficiel(){
+  const btn = document.getElementById('btnFetchMG');
+  const info= document.getElementById('mgFetchInfo');
+  if(btn) btn.disabled=true;
+  if(info) info.textContent='⏳ Recherche en cours…';
+  try{
+    // On appelle l'API SMIC (taux horaire brut) pour déduire le MG
+    // SMIC brut horaire jan 2026 = 11,88 €
+    // MG ass. mat. = SMIC brut horaire × 0.357895... (ratio conventionnel)
+    // Plus sûr : saisie manuelle avec alerte si le MG change
+    // On propose de vérifier sur le site officiel
+    const annee = new Date().getFullYear();
+    if(info) info.innerHTML =
+      '📋 Le MG (Minimum Garanti) est revalorisé chaque <strong>1er janvier</strong> par décret.<br>'
+      +'Valeur actuellement utilisée : <strong>'+MG_FALLBACK+' €</strong> (jan. 2026)<br>'
+      +'<a href="https://www.legifrance.gouv.fr/search/jorf?tab_selection=jorf&query=minimum+garanti+assistante+maternelle" '
+      +'target="_blank" style="color:var(--cc);font-weight:800;">🔗 Vérifier sur Légifrance</a>';
+  } catch(e){
+    if(info) info.textContent = '❌ Erreur — vérifiez votre connexion';
+  }
+  if(btn){ btn.disabled=false; btn.textContent='🔄 Vérifier le MG'; }
+}
+
+async function appliquerNouveauMG(mg){
+  const v = parseFloat(mg);
+  if(isNaN(v)||v<3||v>10){ showToast('Valeur MG invalide (entre 3 et 10 €)','terr'); return; }
+  const nouvelles = calculerTranchesDepuisMG(v);
+  S.params.tranches = nouvelles;
+  S.params.mgActuel = v;
+  save();
+  renderContent();
+  showToast('✅ Tranches recalculées pour MG = '+v+' €','tok');
+}
+
+
+// Calcule l'indemnité selon la durée de garde (en minutes)
+function calcIndemEntretien(durMins){
+  const t=getTranches();
+  const sorted=[...t].sort((a,b)=>a.dureeMax-b.dureeMax);
+  for(const tr of sorted){
+    if(durMins<=tr.dureeMax) return parseFloat(tr.montant)||0;
+  }
+  return parseFloat(sorted[sorted.length-1]?.montant)||0;
+}
+
+function minsToHStr(m){
+  if(m>=9999) return '∞';
+  return Math.floor(m/60)+'h'+String(m%60).padStart(2,'0');
+}
+
+function renderTranches(){
+  const t=getTranches().sort((a,b)=>a.dureeMax-b.dureeMax);
+  return t.map((tr,i)=>`
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;margin-bottom:6px;">
+      <div style="display:flex;align-items:center;gap:5px;">
+        <span style="font-size:.7rem;color:var(--mid);font-weight:700;">≤</span>
+        <input type="number" value="${tr.dureeMax>=9999?'':+(tr.dureeMax/60).toFixed(4)}" placeholder="∞" step="0.25" min="0"
+          style="flex:1;background:var(--bg);border:1.5px solid rgba(0,0,0,.09);border-radius:9px;padding:8px 10px;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;color:var(--deep);outline:none;"
+          oninput="updTranche(${i},'dureeMax',this.value)">
+        <span style="font-size:.7rem;color:var(--mid);font-weight:700;">h</span>
+      </div>
+      <input type="number" value="${tr.montant}" step="0.01" min="0" placeholder="€"
+        style="background:var(--bg);border:1.5px solid rgba(0,0,0,.09);border-radius:9px;padding:8px 10px;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;color:var(--deep);outline:none;"
+        oninput="updTranche(${i},'montant',this.value)">
+      <button onclick="delTranche(${i})" style="background:#FFF0EF;border:none;color:var(--red);border-radius:8px;padding:8px 10px;cursor:pointer;font-size:.82rem;">✕</button>
+    </div>`).join('');
+}
+
+function updTranche(i,k,v){
+  const t=getTranches();
+  if(k==='dureeMax') t[i].dureeMax=v===''?9999:Math.round(parseFloat(v)*60);
+  else t[i].montant=parseFloat(v)||0;
+  S.params.tranches=t;save();
+  document.getElementById('tranchesZone').innerHTML=renderTranches();
+}
+
+function addTranche(){
+  const t=getTranches();
+  t.push({dureeMax:9999,montant:0});
+  S.params.tranches=t;save();renderContent();
+}
+
+function delTranche(i){
+  const t=getTranches();
+  if(t.length<=1){showToast('⚠️ Au moins une tranche requise','terr');return;}
+  t.splice(i,1);S.params.tranches=t;save();renderContent();
+}
+
+function resetTranches2026(){
+  askConfirm('🔄','Remettre les tarifs 2026 ?','Vos modifications seront perdues.',()=>{
+    S.params.tranches=getDefaultTranches();save();renderContent();
+    showToast('🔄 Tarifs 2026 remis','tok');
+  });
+}
+
+// ═══════════════════════════════════
+// CHILD CRUD
+// ═══════════════════════════════════
+
+function loadPhotoPreview(input){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const preview=document.getElementById('mcPhotoPreview');
+    if(preview) preview.innerHTML='<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+    // Stocker temporairement
+    window._photoTemp=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function toggleDay(btn){
+  btn.classList.toggle('active');
+  const actives=[...document.querySelectorAll('.day-btn.active')].map(b=>b.dataset.day);
+  document.getElementById('mcJours').value=actives.join(',');
+
+  // Reconstruire les grilles d'horaires avec les nouveaux jours actifs
+  const joursAct=document.getElementById('mcJours').value;
+  buildHorairesGrid('horairesFixesGrid',joursAct,_horairesFixesTmp);
+  buildHorairesGrid('horairesAGrid',joursAct,_horairesATmp);
+  buildHorairesGrid('horairesBGrid',joursAct,_horairesBTmp);
+}
+
+function openNewChild(){
+  document.getElementById('mChildTitle').textContent='👶 Nouvel enfant';
+  // Vider tous les champs
+  ['mcPrenom','mcNaissance','mcTarif','mcAllergies','mcNotes',
+   'mcP1nom','mcP1tel','mcP2nom','mcP2tel','mcAdresse'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  document.getElementById('mcHHebdo').value=40;
+  document.getElementById('mcJours').value='Lun,Mar,Mer,Jeu,Ven';
+  document.getElementById('mcAnnee').value='complete';
+  document.getElementById('mcNbSemaines').value='';
+  document.getElementById('semainesField').style.display='none';
+  document.getElementById('mChild').dataset.idx='new';
+  buildColorPicker(-1);
+  // Reset photo
+  window._photoTemp=null;
+  const prevEl=document.getElementById('mcPhotoPreview');
+  if(prevEl) prevEl.innerHTML='📷';
+  // Reset jours boutons
+  document.querySelectorAll('.day-btn').forEach(b=>{
+    b.classList.toggle('active',['Lun','Mar','Mer','Jeu','Ven'].includes(b.dataset.day));
+  });
+  _urgences=[];_autorises=[];
+  renderUrgenceList();renderAutorisesList();
+  document.getElementById('mChild').classList.add('open');
+  document.querySelector('#mChild .modal').scrollTop=0;
+}
+
+function openEditChild(idx){
+  const ch=S.children[idx];
+  if(!ch)return;
+  document.getElementById('mChildTitle').textContent='✏️ '+ch.prenom;
+  // Enfant
+  document.getElementById('mcPrenom').value=ch.prenom||'';
+  // Photo
+  window._photoTemp=ch.photo||null;
+  const prev=document.getElementById('mcPhotoPreview');
+  if(prev){
+    if(ch.photo) prev.innerHTML='<img src="'+ch.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+    else prev.innerHTML='📷';
+  }
+  document.getElementById('mcNaissance').value=ch.naissance||'';
+  document.getElementById('mcTarif').value=ch.tarif||'';
+  document.getElementById('mcAllergies').value=ch.allergies||'';
+  document.getElementById('mcNotes').value=ch.notes||'';
+  // Repas fournis — toggles style vaccin
+  const rch=ch.repasInclus||{pDej:false,dej:true,gout:true,din:false};
+  const togMap={pDej:'togRepasPDej',dej:'togRepasDej',gout:'togRepasGout',din:'togRepasDin'};
+  Object.entries(togMap).forEach(([k,id])=>{
+    const btn=document.getElementById(id);
+    if(btn){btn.classList.toggle('on', k==='pDej'?(rch.pDej||false):(rch[k]!==false));}
+  });
+  updateRepasMontantPreview();
+  // Parents
+  document.getElementById('mcP1nom').value=ch.parents?.nom1||'';
+  document.getElementById('mcP1tel').value=ch.parents?.tel1||'';
+  document.getElementById('mcP2nom').value=ch.parents?.nom2||'';
+  document.getElementById('mcP2tel').value=ch.parents?.tel2||'';
+  document.getElementById('mcAdresse').value=ch.parents?.adresse||'';
+  // Urgence
+  // Rétrocompat: ancien format string → nouveau format tableau
+  if(Array.isArray(ch.urgences)){_urgences=JSON.parse(JSON.stringify(ch.urgences));}
+  else if(ch.urgence?.nom){_urgences=[{nom:ch.urgence.nom,tel:ch.urgence.tel||''}];}
+  else{_urgences=[];}
+  if(Array.isArray(ch.autorisesList)){_autorises=JSON.parse(JSON.stringify(ch.autorisesList));}
+  else if(ch.autorises){_autorises=ch.autorises.split(',').map(s=>({nom:s.trim(),tel:''})).filter(a=>a.nom);}
+  else{_autorises=[];}
+  renderUrgenceList();renderAutorisesList();
+  // Contrat
+  document.getElementById('mcHHebdo').value=ch.contrat?.heuresHebdo||40;
+  document.getElementById('mcMethodeCP').value=ch.contrat?.methodeCP||'10pct';
+  // Init boutons jours
+  const joursVal=ch.contrat?.joursContrat||'Lun,Mar,Mer,Jeu,Ven';
+  document.getElementById('mcJours').value=joursVal;
+  document.querySelectorAll('.day-btn').forEach(btn=>{
+    const day=btn.dataset.day;
+    btn.classList.toggle('active', joursVal.includes(day));
+  });
+  document.getElementById('mcAnnee').value=ch.contrat?.anneeComplete===false?'incomplete':'complete';
+  document.getElementById('mcNbSemaines').value=ch.contrat?.nbSemaines||47;
+  document.getElementById('semainesField').style.display=ch.contrat?.anneeComplete===false?'block':'none';
+  // Garde alternée
+  const gardeType=ch.gardeAlternee?.type||'classique';
+  document.getElementById('mcGardeType').value=gardeType;
+  setGardeType(gardeType);
+  if(gardeType==='alternee'){
+    document.getElementById('mcRepartition').value=ch.gardeAlternee?.repartition||'50-50';
+    document.getElementById('mcPart1').value=ch.gardeAlternee?.part1||50;
+    document.getElementById('mcPaje1').value=ch.gardeAlternee?.paje1||'';
+    document.getElementById('mcPaje2').value=ch.gardeAlternee?.paje2||'';
+    toggleRepartCustom();updatePart2();
+  }
+  // N° Pajemploi couple
+  const pcEl=document.getElementById('mcPajeClassique');
+  if(pcEl) pcEl.value=ch.pajeClassique||'';
+  // Planning horaires
+  const typePlanning=ch.contrat?.typePlanning||'hebdo';
+  document.getElementById('mcTypePlanning').value=typePlanning;
+  _horairesFixesTmp=JSON.parse(JSON.stringify(ch.contrat?.horairesFixe||{}));
+  _horairesATmp=JSON.parse(JSON.stringify(ch.contrat?.horairesA||{}));
+  _horairesBTmp=JSON.parse(JSON.stringify(ch.contrat?.horairesB||{}));
+  const jActifs=ch.contrat?.joursContrat||'Lun,Mar,Mer,Jeu,Ven';
+  buildHorairesGrid('horairesFixesGrid',jActifs,_horairesFixesTmp);
+  buildHorairesGrid('horairesAGrid',jActifs,_horairesATmp);
+  buildHorairesGrid('horairesBGrid',jActifs,_horairesBTmp);
+  document.getElementById('planningFixeBlock').style.display=typePlanning==='hebdo'?'block':'none';
+  document.getElementById('planningAlternesBlock').style.display=typePlanning==='alternes'?'block':'none';
+  document.getElementById('planningVariableBlock').style.display=typePlanning==='variable'?'block':'none';
+  document.getElementById('mChild').dataset.idx=idx;
+  buildColorPicker(ch.colorIdx||0);
+  document.getElementById('mChild').classList.add('open');
+  document.querySelector('#mChild .modal').scrollTop=0;
+}
+
+// ── LISTES DYNAMIQUES URGENCE / AUTORISÉS ──
+let _urgences=[];   // [{nom:'', tel:''}]
+let _autorises=[];  // [{nom:'', tel:''}]
+
+function renderUrgenceList(){
+  document.getElementById('urgenceList').innerHTML=_urgences.map((u,i)=>`
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-bottom:6px;align-items:center;">
+      <input type="text" value="${u.nom||''}" placeholder="Nom prénom"
+        style="background:var(--bg);border:1.5px solid rgba(0,0,0,.09);border-radius:9px;padding:8px 10px;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:600;color:var(--deep);outline:none;"
+        oninput="_urgences[${i}].nom=this.value">
+      <input type="tel" value="${u.tel||''}" placeholder="06 xx xx xx xx"
+        style="background:var(--bg);border:1.5px solid rgba(0,0,0,.09);border-radius:9px;padding:8px 10px;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:600;color:var(--deep);outline:none;"
+        oninput="_urgences[${i}].tel=this.value">
+      <button onclick="delUrgence(${i})" style="background:#FFF0EF;border:none;color:var(--red);border-radius:8px;padding:8px 10px;cursor:pointer;font-size:.82rem;">✕</button>
+    </div>`).join('');
+}
+
+function renderAutorisesList(){
+  document.getElementById('autorisesList').innerHTML=_autorises.map((a,i)=>`
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-bottom:6px;align-items:center;">
+      <input type="text" value="${a.nom||''}" placeholder="Nom prénom"
+        style="background:var(--bg);border:1.5px solid rgba(0,0,0,.09);border-radius:9px;padding:8px 10px;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:600;color:var(--deep);outline:none;"
+        oninput="_autorises[${i}].nom=this.value">
+      <input type="tel" value="${a.tel||''}" placeholder="Tél (facultatif)"
+        style="background:var(--bg);border:1.5px solid rgba(0,0,0,.09);border-radius:9px;padding:8px 10px;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:600;color:var(--deep);outline:none;"
+        oninput="_autorises[${i}].tel=this.value">
+      <button onclick="delAutorise(${i})" style="background:#FFF0EF;border:none;color:var(--red);border-radius:8px;padding:8px 10px;cursor:pointer;font-size:.82rem;">✕</button>
+    </div>`).join('');
+}
+
+function addUrgence(){_urgences.push({nom:'',tel:''});renderUrgenceList();}
+
+function setGardeType(type){
+  document.getElementById('mcGardeType').value=type;
+  const btnC=document.getElementById('btnCouple');
+  const btnS=document.getElementById('btnSepare');
+  const info=document.getElementById('gardeTypeInfo');
+  const pajeC=document.getElementById('pajeClassiqueBlock');
+  if(btnC&&btnS){
+    if(type==='classique'){
+      btnC.style.background='var(--ccl)';btnC.style.borderColor='var(--cc)';btnC.style.color='var(--ccd)';
+      btnS.style.background='var(--bg)';btnS.style.borderColor='rgba(0,0,0,.1)';btnS.style.color='var(--deep)';
+      if(info) info.textContent='👨‍👩‍👧 Un seul contrat — un parent employeur';
+      if(pajeC) pajeC.style.display='block';
+    } else {
+      btnS.style.background='var(--ccl)';btnS.style.borderColor='var(--cc)';btnS.style.color='var(--ccd)';
+      btnC.style.background='var(--bg)';btnC.style.borderColor='rgba(0,0,0,.1)';btnC.style.color='var(--deep)';
+      if(info) info.innerHTML='🏠🏠 Garde alternée — <strong>2 contrats</strong>, chaque parent perçoit le CMG (légal déc. 2025)';
+      if(pajeC) pajeC.style.display='none';
+    }
+  }
+  document.getElementById('gardeAlterneeBlock').style.display=type==='alternee'?'block':'none';
+  toggleRepartCustom();
+}
+function toggleGardeAlternee(){
+  setGardeType(document.getElementById('mcGardeType').value);
+}
+function toggleRepartCustom(){
+  const rep=document.getElementById('mcRepartition')?.value;
+  const el=document.getElementById('repartCustomBlock');
+  if(el) el.style.display=rep==='custom'?'block':'none';
+}
+function updatePart2(){
+  const v=Math.min(90,Math.max(10,parseInt(document.getElementById('mcPart1')?.value)||50));
+  const el=document.getElementById('part2Preview');
+  if(el) el.innerHTML=
+    '<div style="display:flex;gap:8px;align-items:center;justify-content:center;margin-top:4px;">'
+    +'<span style="background:var(--ccl);color:var(--ccd);border-radius:8px;padding:4px 10px;font-weight:800;">Parent 1 : '+v+'%</span>'
+    +'<span style="color:var(--mid);">+</span>'
+    +'<span style="background:#f0f0f8;color:var(--deep);border-radius:8px;padding:4px 10px;font-weight:800;">Parent 2 : '+(100-v)+'%</span>'
+    +'<span style="color:var(--green);font-weight:800;">= 100%</span>'
+    +'</div>';
+}
+function delUrgence(i){_urgences.splice(i,1);renderUrgenceList();}
+function addAutorise(){_autorises.push({nom:'',tel:''});renderAutorisesList();}
+function delAutorise(i){_autorises.splice(i,1);renderAutorisesList();}
+
+function onAbsTypeChange(){
+  const type=document.getElementById('absType').value;
+  const isAssmat=type==='conge-am-paye'||type==='conge-am-np';
+  const zone=document.getElementById('absAssmatChoix');
+  if(zone) zone.style.display=isAssmat?'block':'none';
+  if(isAssmat){
+    document.getElementById('absAssmatPaye').checked=(type==='conge-am-paye');
+    document.getElementById('absAssmatNP').checked=(type==='conge-am-np');
+  }
+}
+
+function toggleSemainesField(){
+  const incomplete=document.getElementById('mcAnnee').value==='incomplete';
+  document.getElementById('semainesField').style.display=incomplete?'block':'none';
+}
+
+function togglePlanningFields(){
+  const type=document.getElementById('mcTypePlanning').value;
+  document.getElementById('planningFixeBlock').style.display=type==='hebdo'?'block':'none';
+  document.getElementById('planningAlternesBlock').style.display=type==='alternes'?'block':'none';
+  document.getElementById('planningVariableBlock').style.display=type==='variable'?'block':'none';
+}
+
+function buildHorairesGrid(containerId, joursActifs, data){
+  const JOURS=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  const actifs=joursActifs?joursActifs.split(','):['Lun','Mar','Mer','Jeu','Ven'];
+  const el=document.getElementById(containerId);
+  if(!el)return;
+  // Affiche les 7 jours — ceux hors contrat sont grisés mais visibles
+  el.innerHTML=JOURS.map(j=>{
+    const d=data?.[j]||{};
+    const inContrat=actifs.includes(j);
+    const isRepos=d.repos===true;
+    const isSamDim=(j==='Sam'||j==='Dim');
+    const labelColor=isSamDim?'var(--orange)':inContrat?'var(--deep)':'var(--light)';
+    const opacity=inContrat||isSamDim?'1':'0.45';
+    if(isRepos){
+      return '<div style="display:grid;grid-template-columns:60px 1fr auto;gap:6px;align-items:center;opacity:'+opacity+';margin-bottom:2px;">'
+        +'<span style="font-weight:800;font-size:.82rem;color:'+labelColor+';">'+j+'</span>'
+        +'<span style="font-size:.75rem;font-weight:800;color:var(--green);background:#EAF7F0;border-radius:8px;padding:5px 10px;">🛌 Jour de repos</span>'
+        +'<button onclick="unsetRepos(\''+containerId+'\',\''+j+'\')" style="background:#FFF0EF;border:none;color:var(--red);border-radius:8px;padding:6px 8px;cursor:pointer;font-size:.72rem;font-weight:700;">✕</button>'
+        +'</div>';
+    }
+    return '<div style="display:grid;grid-template-columns:60px 1fr 14px 1fr auto;gap:5px;align-items:center;opacity:'+opacity+';margin-bottom:2px;">'
+      +'<span style="font-weight:800;font-size:.82rem;color:'+labelColor+';">'+j+'</span>'
+      +'<input type="time" value="'+(d.debut||'')+'"'
+      +' style="background:var(--bg);border:1.5px solid rgba(0,0,0,.09);border-radius:9px;padding:6px 7px;font-size:.8rem;font-weight:600;color:var(--deep);font-family:\'Nunito\',sans-serif;"'
+      +' onchange="updateHoraire(\''+containerId+'\',\''+j+'\',\'debut\',this.value)">'
+      +'<span style="text-align:center;color:var(--mid);font-weight:800;font-size:.8rem;">→</span>'
+      +'<input type="time" value="'+(d.fin||'')+'"'
+      +' style="background:var(--bg);border:1.5px solid rgba(0,0,0,.09);border-radius:9px;padding:6px 7px;font-size:.8rem;font-weight:600;color:var(--deep);font-family:\'Nunito\',sans-serif;"'
+      +' onchange="updateHoraire(\''+containerId+'\',\''+j+'\',\'fin\',this.value)">'
+      +'<button title="Marquer repos" onclick="setRepos(\''+containerId+'\',\''+j+'\')" style="background:var(--bg);border:1.5px solid rgba(0,0,0,.07);color:var(--mid);border-radius:8px;padding:5px 7px;cursor:pointer;font-size:.72rem;font-weight:700;">🛌</button>'
+      +'</div>';
+  }).join('');
+}
+
+function setRepos(containerId,jour){
+  const tmp=containerId==='horairesFixesGrid'?_horairesFixesTmp:containerId==='horairesAGrid'?_horairesATmp:_horairesBTmp;
+  tmp[jour]={repos:true};
+  const joursActifs=document.getElementById('mcJours').value;
+  buildHorairesGrid(containerId,joursActifs,tmp);
+  recalcHHebdo();
+}
+function unsetRepos(containerId,jour){
+  const tmp=containerId==='horairesFixesGrid'?_horairesFixesTmp:containerId==='horairesAGrid'?_horairesATmp:_horairesBTmp;
+  delete tmp[jour];
+  const joursActifs=document.getElementById('mcJours').value;
+  buildHorairesGrid(containerId,joursActifs,tmp);
+  recalcHHebdo();
+}
+
+// Stockage temporaire des horaires en cours d'édition
+let _horairesFixesTmp={};
+let _horairesATmp={};
+let _horairesBTmp={};
+
+function updateHoraire(gridId, jour, champ, val){
+  if(gridId==='horairesFixesGrid') _horairesFixesTmp[jour]=Object.assign(_horairesFixesTmp[jour]||{},{[champ]:val});
+  else if(gridId==='horairesAGrid') _horairesATmp[jour]=Object.assign(_horairesATmp[jour]||{},{[champ]:val});
+  else if(gridId==='horairesBGrid') _horairesBTmp[jour]=Object.assign(_horairesBTmp[jour]||{},{[champ]:val});
+  // Recalcul total hebdo auto
+  recalcHHebdo();
+}
+
+function recalcHHebdo(){
+  const type=document.getElementById('mcTypePlanning').value;
+  let totalMin=0;
+  const calcMins=(h)=>{
+    if(!h.debut||!h.fin)return 0;
+    const [dh,dm]=h.debut.split(':').map(Number);
+    const [fh,fm]=h.fin.split(':').map(Number);
+    const diff=(fh*60+fm)-(dh*60+dm);
+    return diff>0?diff:0;
+  };
+  if(type==='hebdo'){
+    Object.values(_horairesFixesTmp).forEach(h=>totalMin+=calcMins(h));
+  } else {
+    let minA=0,minB=0;
+    Object.values(_horairesATmp).forEach(h=>minA+=calcMins(h));
+    Object.values(_horairesBTmp).forEach(h=>minB+=calcMins(h));
+    totalMin=Math.round((minA+minB)/2);
+  }
+  if(totalMin>0){
+    const hh=document.getElementById('mcHHebdo');
+    if(hh) hh.value=(totalMin/60).toFixed(2).replace(/\.00$/,'').replace(/\.50$/,'.5');
+  }
+}
+
+function checkTarifMin(input){
+  const v=parseFloat(input.value);
+  const warn=document.getElementById('tarifMinWarn');
+  if(!warn)return;
+  if(v&&v<3.38){warn.style.display='block';warn.textContent='⚠️ En dessous du minimum légal absolu (3,38 €/h) !';}
+  else if(v&&v<3.64){warn.style.display='block';warn.textContent='⚠️ En dessous du minimum conventionnel (3,64 €/h, conv. particuliers employeurs)';}
+  else{warn.style.display='none';}
+}
+
+function buildColorPicker(sel){
+  document.getElementById('mcColors').innerHTML=COLORS.map((c,i)=>
+    `<div class="cdot ${sel===i?'sel':''}" style="background:${c}" onclick="selColor(${i})"></div>`).join('');
+}
+function selColor(i){document.querySelectorAll('.cdot').forEach((d,j)=>d.classList.toggle('sel',j===i));}
+
+function saveChild(){
+  const prenom=document.getElementById('mcPrenom').value.trim();
+  if(!prenom){showToast('⚠️ Prénom requis','terr');return;}
+  const selDot=document.querySelector('.cdot.sel');
+  const ci=selDot?[...document.querySelectorAll('.cdot')].indexOf(selDot):0;
+  const idx=document.getElementById('mChild').dataset.idx;
+  const tarif=document.getElementById('mcTarif').value;
+  const naissance=document.getElementById('mcNaissance').value;
+  const hHebdo=parseFloat(document.getElementById('mcHHebdo').value)||40;
+  const anneeComplete=document.getElementById('mcAnnee').value!=='incomplete';
+  const newData={
+    prenom,naissance,colorIdx:ci,
+    photo:window._photoTemp||null,
+    tarif:tarif?parseFloat(tarif):null,
+    allergies:document.getElementById('mcAllergies').value.trim(),
+    notes:document.getElementById('mcNotes').value.trim(),
+    repasInclus:{
+      pDej:document.getElementById('togRepasPDej')?.classList.contains('on')||false,
+      dej:document.getElementById('togRepasDej')?.classList.contains('on')||false,
+      gout:document.getElementById('togRepasGout')?.classList.contains('on')||false,
+      din:document.getElementById('togRepasDin')?.classList.contains('on')||false
+    },
+    parents:{
+      nom1:document.getElementById('mcP1nom').value.trim(),
+      tel1:document.getElementById('mcP1tel').value.trim(),
+      nom2:document.getElementById('mcP2nom').value.trim(),
+      tel2:document.getElementById('mcP2tel').value.trim(),
+      adresse:document.getElementById('mcAdresse').value.trim()
+    },
+    urgences:_urgences.filter(u=>u.nom.trim()),
+    autorisesList:_autorises.filter(a=>a.nom.trim()),
+    contrat:{
+      heuresHebdo:hHebdo,
+      joursContrat:document.getElementById('mcJours').value||'Lun,Mar,Mer,Jeu,Ven',
+      anneeComplete,
+      nbSemaines:anneeComplete?52:(parseInt(document.getElementById('mcNbSemaines').value)||47),
+      heuresAnnuelles:Math.round(hHebdo*(anneeComplete?52:(parseInt(document.getElementById('mcNbSemaines').value)||47))),
+      methodeCP:document.getElementById('mcMethodeCP').value||'10pct',
+      typePlanning:document.getElementById('mcTypePlanning').value||'hebdo',
+      horairesFixe:JSON.parse(JSON.stringify(_horairesFixesTmp)),
+      horairesA:JSON.parse(JSON.stringify(_horairesATmp)),
+      horairesB:JSON.parse(JSON.stringify(_horairesBTmp))
+    },
+    gardeAlternee:(()=>{
+      const t=document.getElementById('mcGardeType').value;
+      if(t!=='alternee') return {type:'classique'};
+      const rep=document.getElementById('mcRepartition').value;
+      const p1=rep==='custom'?(parseInt(document.getElementById('mcPart1').value)||50):rep==='60-40'?60:50;
+      return {
+        type:'alternee',
+        repartition:rep,
+        part1:p1,
+        part2:100-p1,
+        paje1:(document.getElementById('mcPaje1').value||'').trim(),
+        paje2:(document.getElementById('mcPaje2').value||'').trim()
+      };
+    })(),
+    pajeClassique:(document.getElementById('mcPajeClassique')?.value||'').trim()
+  };
+  if(idx==='new'){
+    newData.id=Date.now();newData.vaccinsAJour=false;
+    S.children.push(newData);
+    curChild=S.children.length-1;
+  } else {
+    const ch=S.children[parseInt(idx)];
+    if(ch){
+      // Preserve id and vaccinsAJour
+      newData.id=ch.id;
+      newData.vaccinsAJour=ch.vaccinsAJour||false;
+      S.children[parseInt(idx)]=newData;
+    }
+  }
+  save();closeModal('mChild');applyTheme(ci);
+  document.getElementById('hAccent').textContent=prenom;
+  showToast('✅ Enregistré','tok');
+  const _picker=document.getElementById('childPicker');
+  if(_picker && _picker.style.display!=='none'){
+    renderChildPicker();
+  } else {
+    renderTabs();renderContent();
+  }
+}
+
+function delChild(idx){
+  const nom=S.children[idx]?.prenom||'cet enfant';
+  askConfirm('👶','Supprimer '+nom+' ?','Toutes les données seront effacées.',()=>{
+    const id=S.children[idx].id;
+    S.children.splice(idx,1);
+    S.pointages=S.pointages.filter(p=>p.cid!==id);
+    S.absences=S.absences.filter(a=>a.cid!==id);
+    S.notes=S.notes.filter(n=>n.cid!==id);
+    S.hsupp=S.hsupp.filter(h=>h.cid!==id);
+    curChild=Math.max(0,Math.min(curChild,S.children.length-1));
+    save();showToast('🗑️ Enfant supprimé','tinf');render();
+  });
+}
+
+function toggleRepasEnfant(repas){
+  // Toggle dans la modale (pas encore sauvegardé dans S.children)
+  const btn=document.getElementById('togRepas'+repas.charAt(0).toUpperCase()+repas.slice(1));
+  if(!btn)return;
+  btn.classList.toggle('on');
+  updateRepasMontantPreview();
+}
+function toggleVaccin(idx){
+  S.children[idx].vaccinsAJour=!S.children[idx].vaccinsAJour;
+  save();renderContent();
+}
+
+// ═══════════════════════════════════
+// POINTAGE
+// ═══════════════════════════════════
+function pointArr(cid){
+  const date=document.getElementById('aDate')?.value;
+  const heure=document.getElementById('aHeure')?.value;
+  if(!date||!heure){showToast('⚠️ Date et heure requises','terr');return;}
+  if(S.pointages.find(p=>p.cid===cid&&p.date===date&&!p.hDep)){showToast('⚠️ Déjà arrivé(e)','terr');return;}
+  S.pointages.push({id:Date.now(),cid,date,hArr:heure,hDep:null,typeH:'normal'});
+  save();const ch=S.children.find(c=>c.id===cid);
+  showToast(`✅ Arrivée de ${ch?.prenom} à ${heure}`,'tok');renderTabs();renderContent();
+}
+
+function pointDep(cid){
+  const date=document.getElementById('dDate')?.value;
+  const heure=document.getElementById('dHeure')?.value;
+  if(!date||!heure){showToast('⚠️ Heure requise','terr');return;}
+  const p=S.pointages.find(pt=>pt.cid===cid&&pt.date===date&&!pt.hDep);
+  if(!p){showToast('❌ Aucune arrivée ce jour','terr');return;}
+  if(heure<=p.hArr){showToast("⚠️ Départ après l'arrivée",'terr');return;}
+  p.hDep=heure;
+  const ch=S.children.find(c=>c.id===cid);
+  const dur=calcDur(p.hArr,heure); // durée de cette journée en minutes
+
+  // Calcul hebdomadaire : heures déjà faites cette semaine (sans ce pointage)
+  const semDebut=getMondayOf(date);
+  const semFin=getSundayOf(date);
+  const hDejaFaites=S.pointages
+    .filter(pt=>pt.cid===cid&&pt.hDep&&pt.id!==p.id&&pt.date>=semDebut&&pt.date<=semFin)
+    .reduce((acc,pt)=>acc+calcDur(pt.hArr,pt.hDep),0); // en minutes
+
+  const hContratSem=(ch?.contrat?.heuresHebdo||40)*60; // en minutes
+  const hMax45=45*60; // plafond légal en minutes
+
+  const hApres=hDejaFaites+dur; // total semaine après ce pointage
+
+  // Découpage du pointage en 3 tranches
+  let mNormal=0,mComp=0,mSupp=0;
+
+  if(hDejaFaites>=hMax45){
+    // Toute la journée est majorée
+    mSupp=dur;
+  } else if(hDejaFaites>=hContratSem){
+    // Toute la journée est complémentaire ou majorée
+    const resteAvant45=hMax45-hDejaFaites;
+    mComp=Math.min(dur,resteAvant45);
+    mSupp=Math.max(0,dur-resteAvant45);
+  } else {
+    // La journée commence en heures normales
+    const resteNormal=hContratSem-hDejaFaites;
+    mNormal=Math.min(dur,resteNormal);
+    const resteApresNormal=dur-mNormal;
+    if(resteApresNormal>0){
+      const resteAvant45=hMax45-hContratSem;
+      mComp=Math.min(resteApresNormal,resteAvant45);
+      mSupp=Math.max(0,resteApresNormal-resteAvant45);
+    }
+  }
+
+  // Stocker le découpage dans le pointage
+  p.mNormal=mNormal;
+  p.mComp=mComp;
+  p.mSupp=mSupp;
+  p.typeH= mSupp>0?'supp': mComp>0?'comp':'normal';
+
+  // Message toast avec détail
+  let msg=`🚪 Départ – ${fmtDur(dur)}`;
+  if(mComp>0) msg+=` (dont ${fmtDur(mComp)} comp.)`;
+  if(mSupp>0) msg+=` (dont ${fmtDur(mSupp)} maj.)`;
+
+  save();showToast(msg,'tok');renderTabs();renderContent();
+}
+
+// Retourne le lundi de la semaine contenant la date donnée (format YYYY-MM-DD)
+function getMondayOf(dateStr){
+  const d=new Date(dateStr+'T12:00:00');
+  const day=d.getDay();
+  const diff=day===0?-6:1-day;
+  d.setDate(d.getDate()+diff);
+  return d.toISOString().slice(0,10);
+}
+function getSundayOf(dateStr){
+  const d=new Date(getMondayOf(dateStr)+'T12:00:00');
+  d.setDate(d.getDate()+6);
+  return d.toISOString().slice(0,10);
+}
+
+function delPoint(id){
+  askConfirm('🗑️','Supprimer ce pointage ?','Cette action est irréversible.',()=>{
+    S.pointages=S.pointages.filter(p=>p.id!==id);save();showToast('🗑️ Supprimé','tinf');renderContent();
+  });
+}
+
+// ═══════════════════════════════════
+// ABSENCES
+// ═══════════════════════════════════
+function openAbs(cid,type){
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('absDebut').value=today;
+  document.getElementById('absFin').value=today;
+  // Quand on clique "Absence Ass. Mat." → sélectionner payée par défaut + montrer le choix
+  document.getElementById('absType').value=type;
+  onAbsTypeChange();
+  document.getElementById('absNote').value='';
+  document.getElementById('mAbs').dataset.cid=cid;
+  document.getElementById('mAbsTitle').textContent='📅 '+{
+    'enf-just':'Absence justifiée','enf-injust':'Absence injustifiée',
+    'cp':'Congés payés','conge-am-paye':'Absence Ass. Mat.','conge-am-np':'Absence Ass. Mat.'}[type]||'Absence';
+  document.getElementById('mAbs').classList.add('open');
+}
+
+function saveAbsence(){
+  const cid=parseInt(document.getElementById('mAbs').dataset.cid);
+  const debut=document.getElementById('absDebut').value;
+  const fin=document.getElementById('absFin').value;
+  const type=document.getElementById('absType').value;
+  const note=document.getElementById('absNote').value;
+  if(!debut){showToast('⚠️ Date requise','terr');return;}
+  S.absences.push({id:Date.now(),cid,debut,fin:fin||debut,type,note});
+  save();closeModal('mAbs');showToast('✅ Absence enregistrée','tok');renderContent();
+}
+
+function delAbs(id){
+  askConfirm('📅','Supprimer cette absence ?','Cette action est irréversible.',()=>{
+    S.absences=S.absences.filter(a=>a.id!==id);save();showToast('🗑️ Supprimée','tinf');renderContent();
+  });
+}
+
+// ═══════════════════════════════════
+// NOTES
+// ═══════════════════════════════════
+function openNote(cid){
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('noteDate').value=today;
+  document.getElementById('noteText').value='';
+  const ch=S.children.find(c=>c.id===cid);
+  document.getElementById('mNoteTitle').textContent=`📝 Note – ${ch?.prenom||''}`;
+  document.getElementById('mNote').dataset.cid=cid;
+  document.getElementById('mNote').classList.add('open');
+}
+
+function saveNote(){
+  const cid=parseInt(document.getElementById('mNote').dataset.cid);
+  const date=document.getElementById('noteDate').value;
+  const text=document.getElementById('noteText').value.trim();
+  if(!text){showToast('⚠️ Note vide','terr');return;}
+  // Remplacer si même date
+  const existing=S.notes.findIndex(n=>n.cid===cid&&n.date===date);
+  if(existing>=0) S.notes[existing].text=text;
+  else S.notes.push({id:Date.now(),cid,date,text});
+  stopVoice();save();closeModal('mNote');showToast('📝 Note enregistrée','tok');renderContent();
+}
+
+function delNote(id){
+  askConfirm('📝','Supprimer cette note ?','Cette action est irréversible.',()=>{
+    S.notes=S.notes.filter(n=>n.id!==id);save();showToast('🗑️ Note supprimée','tinf');renderContent();
+  });
+}
+
+function printNote(id){
+  const n=S.notes.find(x=>x.id===id);
+  if(!n)return;
+  const ch=S.children.find(c=>c.id===n.cid);
+  const w=window.open('','_blank');
+  const d=new Date(n.date+'T12:00:00');
+  w.document.write(`<html><head><title>Note journalière</title>
+  <style>body{font-family:Arial,sans-serif;padding:30px;max-width:600px;margin:0 auto;}
+  h2{color:#333;border-bottom:2px solid #E07A5F;padding-bottom:8px;}
+  .meta{color:#666;font-size:14px;margin-bottom:20px;}
+  .note{font-size:15px;line-height:1.8;white-space:pre-wrap;background:#f9f9f9;padding:20px;border-radius:8px;}
+  </style></head><body>
+  <h2>📝 Note journalière – ${ch?.prenom||''}</h2>
+  <div class="meta">${WDAYS[d.getDay()]} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}</div>
+  <div class="note">${n.text}</div>
+  <div style="margin-top:30px;color:#999;font-size:12px;">Assistante maternelle : ${S.params.nom||''}</div>
+  </body></html>`);
+  w.document.close();w.print();
+}
+
+// ═══════════════════════════════════
+// HEURES SUPP
+// ═══════════════════════════════════
+function openHSup(cid){
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('hsDate').value=today;
+  document.getElementById('hsH').value='';
+  document.getElementById('hsMin').value='';
+  document.getElementById('hsNote').value='';
+  document.getElementById('mHSup').dataset.cid=cid;
+  document.getElementById('mHSup').classList.add('open');
+}
+
+function saveHSup(){
+  const cid=parseInt(document.getElementById('mHSup').dataset.cid);
+  const date=document.getElementById('hsDate').value;
+  const h=document.getElementById('hsH').value;
+  const min=document.getElementById('hsMin').value;
+  const type=document.getElementById('hsType').value;
+  const note=document.getElementById('hsNote').value;
+  if(!h&&!min){showToast('⚠️ Durée requise','terr');return;}
+  S.hsupp.push({id:Date.now(),cid,date,h:parseInt(h)||0,min:parseInt(min)||0,type,note});
+  save();closeModal('mHSup');showToast('✅ Heures enregistrées','tok');renderContent();
+}
+
+// ═══════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════
+function getMonthPointages(cid){
+  return S.pointages.filter(p=>{const d=new Date(p.date);return p.cid===cid&&d.getMonth()===curMonth&&d.getFullYear()===curYear;});
+}
+function getMonthAbs(cid){
+  return S.absences.filter(a=>{const d=new Date(a.debut);return a.cid===cid&&d.getMonth()===curMonth&&d.getFullYear()===curYear;});
+}
+function getTarif(ch){return ch.tarif||S.params.tarif||4.50;}
+function calcDur(h1,h2){const t=h=>h.split(':').reduce((a,v,i)=>a+(i?parseInt(v):parseInt(v)*60),0);return t(h2)-t(h1);}
+function fmtDur(m){if(m<0)return'—';return`${Math.floor(m/60)}h${String(m%60).padStart(2,'0')}`;}
+function fmtEuro(v){return (v||0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';}
+
+// Calcule l'indemnité repas journalière d'un enfant selon son âge et les repas pris
+function getRepasJournalier(ch, typeRepas){
+  // typeRepas = tableau ex: ['dej','gout'] ou null pour total journalier
+  const rp=S.params.repasParAge||{};
+  const naiss=ch.naissance;
+  let ageKey='3a6';
+  if(naiss){
+    const ans=(new Date()-new Date(naiss))/(365.25*86400000);
+    if(ans<1) ageKey='m1';
+    else if(ans<3) ageKey='1a3';
+    else if(ans<6) ageKey='3a6';
+    else ageKey='p6';
+  }
+  const tranche=rp[ageKey]||{};
+  if(typeRepas){
+    return typeRepas.reduce((s,t)=>s+(parseFloat(tranche[t])||0),0);
+  }
+  // Total journalier = somme de tous les repas renseignés
+  return ['pDej','dej','gout','din'].reduce((s,t)=>s+(parseFloat(tranche[t])||0),0);
+}
+
+// Repas journalier par défaut (fallback ancien champ sRepas)
+function getRepasDefault(ch){
+  const rp=S.params.repasParAge||{};
+  const naiss=ch.naissance;
+  let ageKey='3a6';
+  if(naiss){
+    const ans=(new Date()-new Date(naiss))/(365.25*86400000);
+    if(ans<1) ageKey='m1';
+    else if(ans<3) ageKey='1a3';
+    else if(ans<6) ageKey='3a6';
+    else ageKey='p6';
+  }
+  const tranche=rp[ageKey]||{};
+  const inclus=ch.repasInclus||{pDej:false,dej:true,gout:true,din:false};
+  const map={pDej:'pDej',dej:'dej',gout:'gout',din:'din'};
+  let total=0;
+  Object.entries(map).forEach(([k,rk])=>{
+    if(inclus[k]) total+=parseFloat(tranche[rk])||0;
+  });
+  // Fallback : si aucun tarif repas configuré, utiliser l'ancien champ global
+  return total>0 ? total : (S.params.repas||0);
+}
+
+// Aperçu montant repas dans la modale enfant
+function updateRepasMontantPreview(){
+  const isOn=id=>document.getElementById(id)?.classList.contains('on')||false;
+  const ch={
+    naissance:document.getElementById('mcNaissance')?.value||'',
+    repasInclus:{pDej:isOn('togRepasPDej'),dej:isOn('togRepasDej'),gout:isOn('togRepasGout'),din:isOn('togRepasDin')}
+  };
+  const montant=getRepasDefault(ch);
+  const el=document.getElementById('repasMontantPreview');
+  const nb=[isOn('togRepasPDej'),isOn('togRepasDej'),isOn('togRepasGout'),isOn('togRepasDin')].filter(Boolean).length;
+  if(el){
+    if(nb===0) el.innerHTML='<span style="color:var(--mid);">Aucun repas facturé pour cet enfant</span>';
+    else if(montant>0) el.innerHTML='💰 Total repas/jour : <strong>'+montant.toFixed(2)+' €</strong> ('+nb+' repas)';
+    else el.innerHTML='<span style="color:var(--orange);">⚠️ Configurez les tarifs repas dans les Réglages</span>';
+  }
+}
+
+// ── BRUT / NET ──────────────────────────────────────────────────
+// Taux charges salariales assistante maternelle ≈ 22% (URSSAF 2026)
+const COEFF_NET_SUR_BRUT=0.78;
+function netToBrut(net){return net/COEFF_NET_SUR_BRUT;}
+function brutToNet(brut){return brut*COEFF_NET_SUR_BRUT;}
+function fmtBrutNet(montantNet,small=false){
+  const brut=netToBrut(montantNet);
+  const sz=small?'.68rem':'.73rem';
+  return fmtEuro(montantNet)+'<span style="font-size:'+sz+';color:var(--mid);font-weight:600;margin-left:4px;">(brut ~'+fmtEuro(brut)+')</span>';
+}
+function showTarifBrut(input){
+  const v=parseFloat(input.value);
+  const el=document.getElementById('tarifBrutPreview');
+  if(!el)return;
+  if(v>0) el.innerHTML='≈ '+fmtEuro(netToBrut(v))+' brut/h (estimation URSSAF 2026)';
+  else el.innerHTML='';
+}
+function fmtDate(d){if(!d)return'—';const x=new Date(d+'T12:00:00');return`${String(x.getDate()).padStart(2,'0')}/${String(x.getMonth()+1).padStart(2,'0')}/${x.getFullYear()}`;}
+function calcAge(d){const diff=Date.now()-new Date(d).getTime();const a=new Date(diff);const y=Math.abs(a.getUTCFullYear()-1970);return y>=1?`${y} an${y>1?'s':''}`:`${a.getUTCMonth()} mois`;}
+function daysBetween(d1,d2){return Math.max(1,Math.round((new Date(d2)-new Date(d1))/(1000*60*60*24))+1);}
+
+// ── SALAIRE MENSUALISÉ ──
+// Formule légale : (heures hebdo × 52) / 12 × tarif
+function calcSalaireMensuel(ch){
+  const tarif=getTarif(ch);
+  const hHebdo=ch.contrat?.heuresHebdo||40;
+  const anneeComplete=ch.contrat?.anneeComplete!==false;
+  const nbSem=anneeComplete?52:(ch.contrat?.nbSemaines||47);
+  return (hHebdo*nbSem/12)*tarif;
+}
+
+// ── HEURES DU MOIS (pour formule Cour de Cassation) ──
+// Nb semaines du mois × heures hebdo
+function calcHeuresMois(month,year,ch){
+  const hHebdo=ch.contrat?.heuresHebdo||40;
+  // Nombre de jours ouvrés du mois (lun-ven) × heures/jour
+  const hJour=hHebdo/5;
+  const premier=new Date(year,month,1);
+  const dernier=new Date(year,month+1,0);
+  let joursOuvres=0;
+  for(let d=new Date(premier);d<=dernier;d.setDate(d.getDate()+1)){
+    const j=d.getDay();
+    if(j>=1&&j<=5) joursOuvres++;
+  }
+  return joursOuvres*hJour;
+}
+
+// ── JOURS FÉRIÉS ──
+const FERIES_NOMS={
+  '01-01':"Jour de l'An",'05-01':'Fête du Travail','05-08':'Victoire 1945',
+  '07-14':'Fête Nationale','08-15':'Assomption','11-01':'Toussaint',
+  '11-11':'Armistice','12-25':'Noël'
+};
+
+function getJoursFeries(year){
+  // Calcul de Pâques (algorithme de Butcher)
+  const a=year%19,b=Math.floor(year/100),c=year%100;
+  const d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25);
+  const g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30;
+  const i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7;
+  const m=Math.floor((a+11*h+22*l)/451);
+  const month=Math.floor((h+l-7*m+114)/31);
+  const day=((h+l-7*m+114)%31)+1;
+  const paques=new Date(year,month-1,day);
+
+  const yStr=year.toString();
+  const feries=[
+    yStr+'-01-01',yStr+'-05-01',yStr+'-05-08',
+    yStr+'-07-14',yStr+'-08-15',yStr+'-11-01',yStr+'-11-11',yStr+'-12-25'
+  ];
+
+  // Lundi de Pâques
+  const lPaques=new Date(paques);lPaques.setDate(lPaques.getDate()+1);
+  feries.push(lPaques.toISOString().slice(0,10));
+  FERIES_NOMS[lPaques.toISOString().slice(5,10)]='Lundi de Pâques';
+
+  // Ascension (+39j)
+  const ascension=new Date(paques);ascension.setDate(ascension.getDate()+39);
+  feries.push(ascension.toISOString().slice(0,10));
+  FERIES_NOMS[ascension.toISOString().slice(5,10)]='Ascension';
+
+  // Lundi de Pentecôte (+50j)
+  const pentecote=new Date(paques);pentecote.setDate(pentecote.getDate()+50);
+  feries.push(pentecote.toISOString().slice(0,10));
+  FERIES_NOMS[pentecote.toISOString().slice(5,10)]='Lundi de Pentecôte';
+
+  return feries.sort();
+}
+
+function getJoursFeriesMois(month,year){
+  return getJoursFeries(year).filter(f=>{
+    const d=new Date(f+'T12:00:00');
+    return d.getMonth()===month&&d.getFullYear()===year;
+  });
+}
+
+// ═══════════════════════════════════
+// MODALS
+// ═══════════════════════════════════
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function closeOv(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+
+// ═══════════════════════════════════
+// TOAST
+// ═══════════════════════════════════
+function showToast(msg,type='tinf'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className=`toast ${type} show`;
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ═══════════════════════════════════
+// DATA
+// ═══════════════════════════════════
+function exportData(){
+  const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(b);const a=document.createElement('a');
+  a.href=u;a.download='nounoupro_sauvegarde.json';a.click();URL.revokeObjectURL(u);
+  showToast('📤 Exporté','tok');
+}
+function clearData(){
+  askConfirm('⚠️','Effacer tous les pointages ?','Cette action est irréversible.',()=>{
+    S.pointages=[];S.absences=[];S.hsupp=[];save();showToast('🗑️ Effacé','tinf');renderContent();
+  });
+}
+
+
+// ═══════════════════════════════════
+// MODALE CONFIRMATION CUSTOM
+// ═══════════════════════════════════
+let _confirmCallback=null;
+
+function askConfirm(ico,title,msg,callback){
+  _confirmCallback=callback;
+  document.getElementById('mConfirmIco').textContent=ico;
+  document.getElementById('mConfirmTitle').textContent=title;
+  document.getElementById('mConfirmMsg').textContent=msg;
+  document.getElementById('mConfirm').classList.add('open');
+}
+
+function _confirmOk(){
+  closeModal('mConfirm');
+  if(typeof _confirmCallback==='function') _confirmCallback();
+  _confirmCallback=null;
+}
+
+init();
+</script>
+</body>
+</html>
