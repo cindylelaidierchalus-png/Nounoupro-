@@ -1125,8 +1125,9 @@ function syncFromFirebase(){
     if(user){
       _fbDb.ref('nounoupro/'+user.uid).once('value').then(snap=>{
         const d=snap.val();
-        if(d){S={...S,...d};if(!S.plannings)S.plannings={};renderContent();}
-      }).catch(()=>{});
+        if(d){S={...S,...d};if(!S.plannings)S.plannings={};}
+initSplash();
+      }).catch(()=>{initSplash();});
     } else {
       showLoginScreen();
     }
