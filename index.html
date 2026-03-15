@@ -1099,10 +1099,22 @@ function addDefaultChildren(){
 // ═══════════════════════════════════
 // STORAGE
 // ═══════════════════════════════════
-function load(){
+  function load(){
   try{const s=localStorage.getItem('nounoupro_v1');if(s){const d=JSON.parse(s);S={...S,...d};if(!S.plannings)S.plannings={};}}catch(e){}
 }
-function save(){localStorage.setItem('nounoupro_v1',JSON.stringify(S));}
+function save(){
+  localStorage.setItem('nounoupro_v1',JSON.stringify(S));
+  if(typeof _fbDb!=='undefined'){
+    _fbDb.ref('nounoupro').set(S).catch(()=>{});
+  }
+}
+function syncFromFirebase(){
+  if(typeof _fbDb==='undefined')return;
+  _fbDb.ref('nounoupro').once('value').then(snap=>{
+    const d=snap.val();
+    if(d){S={...S,...d};if(!S.plannings)S.plannings={};renderContent();}
+  }).catch(()=>{});
+}
 
 // ═══════════════════════════════════
 // THEME
