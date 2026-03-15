@@ -728,7 +728,6 @@ function init(){
   document.getElementById('appHdr').style.display='none';
   document.getElementById('mainContent').style.display='none';
   if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
-  initSplash();
   // NE PAS appeler render() ici — l'app reste cachée sous le splash
 }
 
