@@ -208,6 +208,7 @@ body{display:flex;flex-direction:column;}
 </style>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script>
 firebase.initializeApp({
   apiKey:"AIzaSyCokMxQ6ZZJZHa0vJ88wfMwZ0mV-zXOZaA",
@@ -216,11 +217,21 @@ firebase.initializeApp({
   appId:"1:140724572217:web:69f5302f9674f34f55bde8"
 });
 const _fbDb=firebase.database();
+  const _fbAuth=firebase.auth();
 </script>
 </head>
 <body>
 
-<!-- ══ SPLASH SCREEN ══ -->
+<div id="loginScreen" style="display:none;position:fixed;inset:0;z-index:10000;background:linear-gradient(160deg,#1B2A3B,#2d4060);display:none;flex-direction:column;align-items:center;justify-content:center;padding:30px;">
+  <div style="font-size:3rem;margin-bottom:16px;">🌸</div>
+  <div style="font-family:'Playfair Display',serif;font-size:1.8rem;color:#fff;margin-bottom:8px;">Nounou Pro</div>
+  <div style="font-size:.85rem;color:rgba(255,255,255,.5);margin-bottom:32px;">Connexion à votre compte</div>
+  <div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px;">
+    <input id="loginEmail" type="email" placeholder="Email" style="padding:14px;border-radius:12px;border:none;font-size:1rem;font-family:'Nunito',sans-serif;">
+    <input id="loginPwd" type="password" placeholder="Mot de passe" style="padding:14px;border-radius:12px;border:none;font-size:1rem;font-family:'Nunito',sans-serif;">
+    <button onclick="doLogin()" style="padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#E07A5F,#C8960C);color:#fff;font-size:1rem;font-weight:800;font-family:'Nunito',sans-serif;cursor:pointer;">Se connecter ✨</button>
+  </div>
+</div><!-- ══ SPLASH SCREEN ══ -->
 <div id="splash" style="
   position:fixed;inset:0;z-index:9999;
   background:linear-gradient(160deg,#1B2A3B 0%,#243447 40%,#2d4060 100%);
@@ -1105,16 +1116,38 @@ function addDefaultChildren(){
 }
 function save(){
   localStorage.setItem('nounoupro_v1',JSON.stringify(S));
-  if(typeof _fbDb!=='undefined'){
-    _fbDb.ref('nounoupro').set(S).catch(()=>{});
+  if(typeof _fbDb!=='undefined'&&_fbAuth.currentUser){
+    _fbDb.ref('nounoupro/'+_fbAuth.currentUser.uid).set(S).catch(()=>{});
   }
 }
 function syncFromFirebase(){
   if(typeof _fbDb==='undefined')return;
-  _fbDb.ref('nounoupro').once('value').then(snap=>{
-    const d=snap.val();
-    if(d){S={...S,...d};if(!S.plannings)S.plannings={};renderContent();}
-  }).catch(()=>{});
+  _fbAuth.onAuthStateChanged(user=>{
+    if(user){
+      _fbDb.ref('nounoupro/'+user.uid).once('value').then(snap=>{
+        const d=snap.val();
+        if(d){S={...S,...d};if(!S.plannings)S.plannings={};renderContent();}
+      }).catch(()=>{});
+    } else {
+      showLoginScreen();
+    }
+  });
+}
+
+function showLoginScreen(){
+  document.getElementById('splash').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+}
+
+function doLogin(){
+  const email=document.getElementById('loginEmail').value;
+  const pwd=document.getElementById('loginPwd').value;
+  _fbAuth.signInWithEmailAndPassword(email,pwd)
+    .then(()=>{ 
+      document.getElementById('loginScreen').style.display='none';
+      initSplash();
+    })
+    .catch(()=>showToast('❌ Email ou mot de passe incorrect','terr'));
 }
 
 // ═══════════════════════════════════
