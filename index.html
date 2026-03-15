@@ -707,6 +707,7 @@ let curMonth,curYear,curChild=0,curSub='accueil';
 // ═══════════════════════════════════
 function init(){
   load();
+  syncFromFirebase();
   const now=new Date();
   curMonth=now.getMonth(); curYear=now.getFullYear();
   if(!S.children.length) addDefaultChildren();
