@@ -1143,9 +1143,10 @@ function doLogin(){
   const email=document.getElementById('loginEmail').value;
   const pwd=document.getElementById('loginPwd').value;
   _fbAuth.signInWithEmailAndPassword(email,pwd)
-    .then(()=>{ 
+    .then(()=>{
       document.getElementById('loginScreen').style.display='none';
-      initSplash();
+      document.getElementById('splash').style.display='flex';
+      hideSplash();
     })
     .catch(()=>showToast('❌ Email ou mot de passe incorrect','terr'));
 }
