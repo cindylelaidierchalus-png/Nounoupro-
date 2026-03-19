@@ -224,12 +224,13 @@ const _fbDb=firebase.database();
 
 <div id="loginScreen" style="display:none;position:fixed;inset:0;z-index:10000;background:linear-gradient(160deg,#1B2A3B,#2d4060);flex-direction:column;align-items:center;justify-content:center;padding:30px;">
   <div style="font-size:3rem;margin-bottom:16px;">🌸</div>
-  <div style="font-family:'Playfair Display',serif;font-size:1.8rem;color:#fff;margin-bottom:8px;">Nounou Pro</div>
-  <div style="font-size:.85rem;color:rgba(255,255,255,.5);margin-bottom:32px;">Connexion à votre compte</div>
-  <button onclick="doGoogleLogin()" style="display:flex;align-items:center;gap:12px;padding:14px 24px;border-radius:12px;border:none;background:#fff;color:#333;font-size:1rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.3);">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:24px;">
-    Se connecter avec Google
-  </button>
+  <div style="font-family:'Playfair Display',serif;font-size:1.8rem;color:#fff;margin-bottom:32px;">Nounou Pro</div>
+  <div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px;">
+    <input id="loginEmail" type="email" placeholder="Email" style="padding:14px;border-radius:12px;border:none;font-size:1rem;font-family:'Nunito',sans-serif;">
+    <input id="loginPwd" type="password" placeholder="Mot de passe" style="padding:14px;border-radius:12px;border:none;font-size:1rem;font-family:'Nunito',sans-serif;">
+    <button onclick="doLogin()" style="padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#E07A5F,#C8960C);color:#fff;font-size:1rem;font-weight:800;font-family:'Nunito',sans-serif;cursor:pointer;">Se connecter ✨</button>
+    <button onclick="doRegister()" style="padding:14px;border-radius:12px;border:2px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:1rem;font-weight:800;font-family:'Nunito',sans-serif;cursor:pointer;">Créer un compte</button>
+  </div>
 </div>
 </div><!-- ══ SPLASH SCREEN ══ -->
 <div id="splash" style="
