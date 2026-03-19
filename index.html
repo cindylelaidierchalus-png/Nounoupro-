@@ -1152,12 +1152,7 @@ function doLogin(){
 }
   function doGoogleLogin(){
   const provider=new firebase.auth.GoogleAuthProvider();
-  _fbAuth.signInWithPopup(provider)
-    .then(()=>{
-      document.getElementById('loginScreen').style.display='none';
-      hideSplash();
-    })
-    .catch(e=>showToast('❌ Erreur connexion Google','terr'));
+  _fbAuth.signInWithRedirect(provider);
 }
 
 // ═══════════════════════════════════
