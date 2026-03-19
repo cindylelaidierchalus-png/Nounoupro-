@@ -1151,6 +1151,17 @@ function doLogin(){
     })
     .catch(()=>showToast('❌ Email ou mot de passe incorrect','terr'));
 }
+  function doRegister(){
+  const email=document.getElementById('loginEmail').value;
+  const pwd=document.getElementById('loginPwd').value;
+  if(!email||!pwd){showToast('❌ Remplis email et mot de passe','terr');return;}
+  _fbAuth.createUserWithEmailAndPassword(email,pwd)
+    .then(()=>{
+      document.getElementById('loginScreen').style.display='none';
+      hideSplash();
+    })
+    .catch(e=>showToast('❌ '+e.message,'terr'));
+}
   function doGoogleLogin(){
   const provider=new firebase.auth.GoogleAuthProvider();
   _fbAuth.signInWithRedirect(provider);
