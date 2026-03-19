@@ -1150,6 +1150,15 @@ function doLogin(){
     })
     .catch(()=>showToast('❌ Email ou mot de passe incorrect','terr'));
 }
+  function doGoogleLogin(){
+  const provider=new firebase.auth.GoogleAuthProvider();
+  _fbAuth.signInWithPopup(provider)
+    .then(()=>{
+      document.getElementById('loginScreen').style.display='none';
+      hideSplash();
+    })
+    .catch(e=>showToast('❌ Erreur connexion Google','terr'));
+}
 
 // ═══════════════════════════════════
 // THEME
